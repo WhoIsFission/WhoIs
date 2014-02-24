@@ -1,0 +1,13 @@
+hello: Hello world this is Whois world!!
+connectionPool: 5
+threads: 4
+database:
+  # the name of your JDBC driver
+  driverClass: com.mysql.jdbc.Driver
+  # the username
+  user: root
+  # the password
+  password: pass
+  # the JDBC URL
+  url: jdbc:mysql://127.0.0.1/test
+  # any properties specific to your JDBC driver:
