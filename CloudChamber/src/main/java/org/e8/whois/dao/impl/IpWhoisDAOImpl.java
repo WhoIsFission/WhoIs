@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.e8.whois.configuration.Database;
 import org.e8.whois.configuration.WhoIsConfiguration;
+import org.e8.whois.dao.ConnectionManager;
 import org.e8.whois.dao.IpWhoisDAO;
 import org.e8.whois.dao.builder.WhoisNodeBuilder;
 import org.e8.whois.model.Organisation;
@@ -23,25 +24,30 @@ import org.slf4j.LoggerFactory;
 public class IpWhoisDAOImpl implements IpWhoisDAO{
 
 	final static Logger logger = LoggerFactory.getLogger(IpWhoisDAOImpl.class);
-	private WhoIsConfiguration whoisConfig;
+	private static WhoIsConfiguration whoisConfig;
+	private static IpWhoisDAO IPWhoIsDAO;
 
-	public IpWhoisDAOImpl(WhoIsConfiguration whoisConfig){
-		this.whoisConfig = whoisConfig;
-	}	
+	private IpWhoisDAOImpl(){
+	}
 
 	public Connection connectDataBase() throws Exception {
 
-		Database databaseProps = whoisConfig.getDatabase();
-
-		// Load the MySQL driver
-		Class.forName(databaseProps.getDriverClass());
-		// Setup the connection with the DB
-		Connection connection = DriverManager.getConnection(databaseProps.getUrl(), databaseProps.getUser(), databaseProps.getPassword());	             
-
-		return connection;
+		return ConnectionManager.getConnectionManager(whoisConfig).getConnection();
+		
 	}
 
-
+public static IpWhoisDAO getInstance(WhoIsConfiguration conf){
+	if(IPWhoIsDAO==null){
+		synchronized(IpWhoisDAOImpl.class){
+			if(IPWhoIsDAO==null){
+				whoisConfig=conf;
+				IPWhoIsDAO=new IpWhoisDAOImpl();
+			}
+		}
+	}
+	return IPWhoIsDAO;
+}
+//why not boolean
 	public List<WhoIsNode<Long>> findWhoisByIp(Long intIpAddress, int isCurrentData) throws SQLException {
 		List<WhoIsNode<Long>> whoisNodeList = null;
 		Connection connection = null;
@@ -60,7 +66,7 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 			logger.error("Exception occured while trying to find whois by IP:",e);
 		}
 		finally{
-			connection.close();
+			ConnectionManager.getConnectionManager(whoisConfig).closeConnection(connection);
 		}
 
 		return whoisNodeList;
@@ -140,12 +146,12 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 			whoIsNodeList = returnResultSet(resultSet,connection);
 		}
 		finally{
-			connection.close();
+			ConnectionManager.getConnectionManager(whoisConfig).closeConnection(connection);
 		}
 		return whoIsNodeList;
 	}
 
-	public void updateWhoisByIp() {
+	public void updateWhoisByIp(WhoIsNode<Long> aNode) {
 		// TODO Auto-generated method stub
 
 	}

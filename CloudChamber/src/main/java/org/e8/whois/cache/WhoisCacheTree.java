@@ -155,6 +155,7 @@ public class WhoisCacheTree<T>{
      * 
      */
     private T findMax(WhoIsNode<T> n){
+    	n.max=n.high;// done for deletion
         if(n.left==null && n.right==null){
             return n.max;
         }
@@ -352,14 +353,53 @@ public int getHeight(){
 public void deleteCache(){
 	this.root=null;
 }
+
+
+
+/*
+ * Helper method for deleting specific interval 
+ * 
+ */
+private DeleteWhoisEntry<T> deleteSpecificInterval(WhoIsNode<T> nod,WhoIsNode<T> parent,T keySearch){
+	DeleteWhoisEntry<T> left=null;
+	DeleteWhoisEntry<T> right=null;
+	DeleteWhoisEntry<T> curr=null;
+	DeleteWhoisEntry<T> returnNode=null;
+	if(nod.left!=null&&((Comparable)nod.left.max).compareTo(keySearch)>=0){
+		left=deleteSpecificInterval(nod.left,nod,keySearch);
+    }
+   
+	if(nod.right!=null&&((Comparable)nod.right.max).compareTo(keySearch)>=0){
+		right=deleteSpecificInterval(nod.right,nod,keySearch);
+     }
+	if(isInside(nod, keySearch)){
+		curr=new DeleteWhoisEntry<T>();
+		curr.aNode=nod;
+		curr.aParent=parent;
+	}	
+	if(left==null&&right==null)
+		return curr;
+	
+	if(left!=null&&(right==null||(left).compareTo(right)<=0))
+		returnNode=left;
+	else
+		returnNode=right;
+	
+	if(returnNode!=null&&(curr==null||returnNode.compareTo(curr)<=0))
+		return returnNode;
+	else
+		return curr;
+
+}
+
 /**
  * Deleting specific IP range in a cache
  * @param keySearch
  */
 public void deleteCacheEntry(T keySearch){
-	WhoIsNode<T> node=searchSpecificIntervalHelper(root, keySearch);
-	if(node!=null)
-	deleteCacheEntry(node.getLow(),root, null);
+	DeleteWhoisEntry<T> delNode=deleteSpecificInterval(root,null, keySearch);
+	if(delNode!=null)
+	deleteCacheEntry(delNode.aNode, delNode.aParent);
 }
 
 /*
@@ -367,8 +407,8 @@ public void deleteCacheEntry(T keySearch){
  * 
  */
 
-private void deleteCacheEntry(T key,WhoIsNode<T> node,WhoIsNode<T> parent){
-	if(((Comparable)node.getLow()).compareTo(key)==0){
+private void deleteCacheEntry(WhoIsNode<T> node,WhoIsNode<T> parent){
+	
 		//TODO delete it
 		if(node.left==null&&node.right==null){
 			if(parent.left==node){
@@ -395,17 +435,14 @@ private void deleteCacheEntry(T key,WhoIsNode<T> node,WhoIsNode<T> parent){
 				}
 				nodeToInsert.left=node.left;
 				nodeToInsert.right=node.right;
-				if(parent==null)
-					parent=nodeToInsert;
+				if(parent==null){
+					root=nodeToInsert;
+				}
 				
 			}
-		parent=balanceTree(parent);
+		root=balanceTree(root);
 		node=null;
-	}else if(node.left!=null&&((Comparable)node.getLow()).compareTo(key)>=0){
-		deleteCacheEntry(key,node.left,node);
-    }else{
-    	deleteCacheEntry(key,node.right,node);
-     }
+	
 	
 }
 
@@ -440,10 +477,10 @@ private WhoIsNode<T> balanceTree(WhoIsNode<T> node){
 
 	node.left=balanceTree(node.left);
 	node.right=balanceTree(node.right);
-	
+
 	node.height=Math.max(height(node.left), height(node.right))+1;
     node.max=findMax(node);
-    int hd = heightDiff(node);
+	int hd = heightDiff(node);
     if(hd<-1){
         int kk=heightDiff(node.right);
         if(kk>0){
@@ -466,4 +503,25 @@ private WhoIsNode<T> balanceTree(WhoIsNode<T> node){
     else return node;
 }
 
+/**
+ * 
+ * Helper class for DeleteWhoisEntry
+ * @author Abhijit
+ *
+ * @param <T>
+ */
+private class DeleteWhoisEntry<T> implements Comparable<DeleteWhoisEntry<T>>{
+	WhoIsNode<T> aNode;
+	WhoIsNode<T> aParent;
+
+	 DeleteWhoisEntry(){
+		 
+	 }
+
+	@Override
+	public int compareTo(DeleteWhoisEntry<T> o) {
+		// TODO Auto-generated method stub
+		return this.aNode.compareTo(o.aNode);
+	}
+}
 }

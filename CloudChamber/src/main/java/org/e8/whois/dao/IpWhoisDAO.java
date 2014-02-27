@@ -15,5 +15,5 @@ public interface IpWhoisDAO {
 	
 	List<WhoIsNode<Long>> findAllWhoisByIpData() throws Exception;
 	
-	void updateWhoisByIp();
+	void updateWhoisByIp(WhoIsNode<Long> aNode);
 }

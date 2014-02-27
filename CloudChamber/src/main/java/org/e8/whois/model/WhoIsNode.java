@@ -17,7 +17,7 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 	private Date regDate;
 	private Date updatedDate;
 	private String ref;
-	private int isCurrentData =1;//1 implies current data 0 - historic data
+	private int isCurrentData =1;//1 implies current data 0 - historic data// whynot boolean
 	
 	public int getIsCurrentData() {
 		return isCurrentData;

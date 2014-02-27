@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.e8.whois.cache.WhoisCacheTree;
 import org.e8.whois.configuration.WhoIsConfiguration;
-import org.e8.whois.model.ResponseNode;
+import org.e8.whois.dao.impl.IpWhoisDAOImpl;
 import org.e8.whois.model.WhoIsNode;
 import org.e8.whois.parser.WhoIsParser;
 
@@ -56,7 +56,7 @@ public class ResourceCacheDB {
 	 * @param responseNode
 	 */
 	private static void persistToDB(WhoIsNode<Long> aNode,WhoIsConfiguration conf){
-		
+		IpWhoisDAOImpl.getInstance(conf).updateWhoisByIp(aNode);
 	}
 	/**
 	 * Building cache
