@@ -12,8 +12,6 @@ import com.yammer.dropwizard.config.Environment;
 
 public class WhoIsService extends Service<WhoIsConfiguration>{
 	
-	Map<String,String> cache=new HashMap<String,String>();
-
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 new WhoIsService().run(args);
@@ -28,7 +26,8 @@ new WhoIsService().run(args);
 	@Override
 	public void run(WhoIsConfiguration conf, Environment env) throws Exception {
 		// TODO Auto-generated method stub
-		env.addResource(new IPResource(cache));
+		BuildCache.cacheBuild(conf);
+		env.addResource(new IPResource(conf));
 	}
 
 }

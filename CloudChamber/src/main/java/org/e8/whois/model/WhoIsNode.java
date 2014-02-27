@@ -48,7 +48,10 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 
 	public void setHigh(T high) {
 		this.high = high;
+		this.max=high;
+		this.height=1;
 	}
+
 	private Organisation org;
     private List<OrganisationAbuse> orgAbuse;
     private List<OrganisationTech> orgTech;
@@ -89,7 +92,7 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
     public T max;
     public int height;
     public WhoIsNode(){
-    	
+    
     }
     public WhoIsNode(T l, T h){
         this.low=l;
