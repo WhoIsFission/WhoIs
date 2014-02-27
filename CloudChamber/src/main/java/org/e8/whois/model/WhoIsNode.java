@@ -17,7 +17,17 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 	private Date regDate;
 	private Date updatedDate;
 	private String ref;
-    public String getRef() {
+	private int isCurrentData =1;//1 implies current data 0 - historic data
+	
+	public int getIsCurrentData() {
+		return isCurrentData;
+	}
+
+	public void setIsCurrentData(int isCurrentData) {
+		this.isCurrentData = isCurrentData;
+	}
+
+	public String getRef() {
 		return ref;
 	}
 

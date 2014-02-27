@@ -7,7 +7,7 @@ database:
   # the username
   user: root
   # the password
-  password: pass
+  password: root
   # the JDBC URL
-  url: jdbc:mysql://127.0.0.1/test
+  url: jdbc:mysql://localhost/whoisdev
   # any properties specific to your JDBC driver:
