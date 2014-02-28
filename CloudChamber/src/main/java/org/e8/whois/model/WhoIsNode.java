@@ -38,7 +38,16 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 @XmlElement(name="Reference")
 	private String ref;
 	private boolean isCurrentData =true;//1 implies current data 0 - historic data// whynot boolean
+	private String rawResponse;
 	
+	public String getRawResponse() {
+		return rawResponse;
+	}
+
+	public void setRawResponse(String rawResponse) {
+		this.rawResponse = rawResponse;
+	}
+
 	public boolean getIsCurrentData() {
 		return isCurrentData;
 	}
@@ -120,6 +129,7 @@ private List<OrganisationAbuse> orgAbuse;
     public T getHigh(){
     	return this.high;
 }
+    
 	public WhoIsNode<T> left;
     public WhoIsNode<T> right;
     public T max;
