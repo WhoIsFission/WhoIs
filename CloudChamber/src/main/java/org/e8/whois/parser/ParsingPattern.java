@@ -32,7 +32,8 @@ enum ParsingPattern {
 ,     WHOIS_ORGPHONE_PATTERN
 ,     WHOIS_ORGFAX_PATTERN
 ,     WHOIS_DESCR_PATTERN
-,     ;
+,     WHOIS_ORGTECHADDRESS_PATTERN 
+,     WHOIS_ORGABUSEADDRESS_PATTERN;
 	  
 private ParsingPattern(){
 		  

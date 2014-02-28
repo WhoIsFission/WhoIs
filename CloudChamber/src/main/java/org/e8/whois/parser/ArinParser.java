@@ -41,11 +41,13 @@ static{
 	ARIN_PARSE_MAP.put("OrgTechHandle", ParsingPattern.WHOIS_ORGTECHHANDLE_PATTERN);
 	ARIN_PARSE_MAP.put("OrgTechName", ParsingPattern.WHOIS_ORGTECHNAME_PATTERN);
 	ARIN_PARSE_MAP.put("OrgTechPhone", ParsingPattern.WHOIS_ORGTECHPHONE_PATTERN);
+	ARIN_PARSE_MAP.put("OrgTechAddress", ParsingPattern.WHOIS_ORGTECHADDRESS_PATTERN);
 	ARIN_PARSE_MAP.put("OrgTechEmail", ParsingPattern.WHOIS_ORGTECHEMAIL_PATTERN);
 	ARIN_PARSE_MAP.put("OrgTechRef", ParsingPattern.WHOIS_ORGTECHREF_PATTERN);
 	ARIN_PARSE_MAP.put("OrgAbuseHandle", ParsingPattern.WHOIS_ORGABUSEHANDLE_PATTERN);
 	ARIN_PARSE_MAP.put("OrgAbuseName", ParsingPattern.WHOIS_ORGABUSENAME_PATTERN);
 	ARIN_PARSE_MAP.put("OrgAbusePhone", ParsingPattern.WHOIS_ORGABUSEPHONE_PATTERN);
+	ARIN_PARSE_MAP.put("OrgAbuseAddress", ParsingPattern.WHOIS_ORGABUSEADDRESS_PATTERN);
 	ARIN_PARSE_MAP.put("OrgAbuseEmail", ParsingPattern.WHOIS_ORGABUSEEMAIL_PATTERN);
 	ARIN_PARSE_MAP.put("OrgAbuseRef", ParsingPattern.WHOIS_ORGABUSEREF_PATTERN);
 	
@@ -103,6 +105,8 @@ static{
 			  }
 			  String netrange[]=aValue.split("-");
 			  if(netrange!=null&&netrange.length>1){
+				  node.setStartAddress(netrange[0].trim());
+				  node.setEndAddress(netrange[1].trim());
 			  node.setLow(this.ipToLong(netrange[0].trim()));
 			  node.setHigh(this.ipToLong(netrange[1].trim()));
 			  }
@@ -180,6 +184,11 @@ static{
 			   orgTech=node.getOrgTech().get(len-1);
 			   orgTech.setOrgTechPhone(aValue);
 			   break;
+		  case WHOIS_ORGTECHADDRESS_PATTERN:
+			  len=node.getOrgTech().size();
+			  orgTech=node.getOrgTech().get(len-1);
+			  orgTech.setOrgTechAdrress(aValue);
+			  break;
 		  case WHOIS_ORGTECHEMAIL_PATTERN:
 			  len=node.getOrgTech().size();
 			   orgTech=node.getOrgTech().get(len-1);
@@ -204,6 +213,11 @@ static{
 			  len=node.getOrgAbuse().size();
 			  orgAbuse=node.getOrgAbuse().get(len-1);
 			  orgAbuse.setOrgAbusePhone(aValue);
+			  break;
+		  case WHOIS_ORGABUSEADDRESS_PATTERN:
+			  len=node.getOrgAbuse().size();
+			  orgAbuse=node.getOrgAbuse().get(len-1);
+			  orgAbuse.setOrgAbuseAddress(aValue);
 			  break;
 		  case WHOIS_ORGABUSEEMAIL_PATTERN:
 			  len=node.getOrgAbuse().size();

@@ -91,6 +91,8 @@ public class AfrinicParser extends IPParser{
 			  }
 			  String netrange[]=aValue.split("-");
 			  if(netrange!=null&&netrange.length>1){
+				  node.setStartAddress(netrange[0].trim());
+				  node.setEndAddress(netrange[1].trim());
 			  node.setLow(this.ipToLong(netrange[0].trim()));
 			  node.setHigh(this.ipToLong(netrange[1].trim()));
 			  }
@@ -119,9 +121,9 @@ public class AfrinicParser extends IPParser{
 			  len=node.getOrgTech().size();
 			  if(len>0){
 				   orgTech=node.getOrgTech().get(len-1);
-				   orgTech.setOrgAdrress((orgTech.getOrgAdrress()==null?"":orgTech.getOrgAdrress()+System.getProperty("line.separator"))+aValue);
+				   orgTech.setOrgTechAdrress((orgTech.getOrgTechAdrress()==null?"":orgTech.getOrgTechAdrress()+", ")+aValue);
 			  }else{
-				  node.getOrg().setAddress((node.getOrg().getAddress()==null?"":node.getOrg().getAddress()+System.getProperty("line.separator"))+aValue);
+				  node.getOrg().setAddress((node.getOrg().getAddress()==null?"":node.getOrg().getAddress()+", ")+aValue);
 					  }
 			  
 			  break;
