@@ -33,6 +33,8 @@ CREATE TABLE `abusecontact` (
   `abuse_phone` varchar(200) DEFAULT NULL,
   `abuse_email` varchar(200) DEFAULT NULL,
   `abuse_ref` varchar(200) DEFAULT NULL,
+  `is_current_data` tinyint(1) DEFAULT '1',
+  `last_updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `ABUSECONTACT_FK_idx` (`ip_start_address`,`ip_end_address`),
   CONSTRAINT `ABUSECONTACT_FK` FOREIGN KEY (`ip_start_address`, `ip_end_address`) REFERENCES `ipwhois` (`ip_start_address`, `ip_end_address`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -44,7 +46,7 @@ CREATE TABLE `abusecontact` (
 
 LOCK TABLES `abusecontact` WRITE;
 /*!40000 ALTER TABLE `abusecontact` DISABLE KEYS */;
-INSERT INTO `abusecontact` VALUES (3231054848,3231055103,'AOA4-ARIN','ARIN Operations Abuse','','+1-703-227-0660','abuse@arin.net','http://whois.arin.net/rest/poc/AOA4-ARIN');
+INSERT INTO `abusecontact` VALUES (3231054848,3231055103,'AOA4-ARIN','ARIN Operations Abuse','','+1-703-227-0660','abuse@arin.net','http://whois.arin.net/rest/poc/AOA4-ARIN',1,'2014-02-28 07:03:45');
 /*!40000 ALTER TABLE `abusecontact` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -81,6 +83,7 @@ CREATE TABLE `ipwhois` (
   `org_ref` varchar(200) DEFAULT NULL,
   `is_current_data` tinyint(1) DEFAULT '1',
   `last_updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `raw_response` longtext,
   PRIMARY KEY (`ip_start_address`,`ip_end_address`),
   KEY `IPWHOIS_PK` (`ip_start_address`,`ip_end_address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -92,7 +95,7 @@ CREATE TABLE `ipwhois` (
 
 LOCK TABLES `ipwhois` WRITE;
 /*!40000 ALTER TABLE `ipwhois` DISABLE KEYS */;
-INSERT INTO `ipwhois` VALUES (3231054848,3231055103,'AS10745','ARIN-NET','NET-192-149-252-0-1','NET-192-0-0-0-0','Direct Assignment',NULL,'ARIN',NULL,'2012-09-06 13:00:00','2012-09-18 13:00:00','ARIN Operations','ARINOPS',NULL,NULL,'Chantilly','VA','US','20151','2012-09-06 13:00:00','2012-09-18 13:00:00','http://whois.arin.net/rest/org/ARINOPS',1,'2014-02-27 10:07:29');
+INSERT INTO `ipwhois` VALUES (3231054848,3231055103,'AS10745','ARIN-NET','NET-192-149-252-0-1','NET-192-0-0-0-0','Direct Assignment',NULL,'ARIN',NULL,'2012-09-06 13:00:00','2012-09-18 13:00:00','ARIN Operations','ARINOPS',NULL,NULL,'Chantilly','VA','US','20151','2012-09-06 13:00:00','2012-09-18 13:00:00','http://whois.arin.net/rest/org/ARINOPS',1,'2014-02-28 06:48:21',NULL),(3231054850,3231055103,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,'2014-02-28 06:54:15',NULL);
 /*!40000 ALTER TABLE `ipwhois` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -113,6 +116,8 @@ CREATE TABLE `techcontact` (
   `tech_email` varchar(200) DEFAULT NULL,
   `tech_fax` varchar(200) DEFAULT NULL,
   `tech_ref` varchar(200) DEFAULT NULL,
+  `is_current_data` tinyint(1) DEFAULT '1',
+  `last_updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `TECHCONTACT_FK_idx` (`ip_start_address`,`ip_end_address`),
   CONSTRAINT `TECHCONTACT_FK` FOREIGN KEY (`ip_start_address`, `ip_end_address`) REFERENCES `ipwhois` (`ip_start_address`, `ip_end_address`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -124,7 +129,7 @@ CREATE TABLE `techcontact` (
 
 LOCK TABLES `techcontact` WRITE;
 /*!40000 ALTER TABLE `techcontact` DISABLE KEYS */;
-INSERT INTO `techcontact` VALUES (3231054848,3231055103,'CHRIS167-ARIN','Christensen,Tim','','1-703-227-0660','timc@arin.net','','http://whois.arin.net/rest/poc/CHRIS167-ARIN');
+INSERT INTO `techcontact` VALUES (3231054848,3231055103,'CHRIS167-ARIN','Christensen,Tim','','1-703-227-0660','timc@arin.net','','http://whois.arin.net/rest/poc/CHRIS167-ARIN',1,'2014-02-28 07:04:43');
 /*!40000 ALTER TABLE `techcontact` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -137,4 +142,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-02-27 18:14:56
+-- Dump completed on 2014-02-28 14:52:15
