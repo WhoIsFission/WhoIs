@@ -27,6 +27,22 @@ public class Database {
 	@NotNull
 	@JsonProperty
 	private String url;
+	
+	
+	@Valid
+	@NotNull
+	@JsonProperty
+	private String name;
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 
 	public String getDriverClass() {

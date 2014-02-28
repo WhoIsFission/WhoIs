@@ -7,7 +7,7 @@ import org.e8.whois.model.WhoIsNode;
 
 public interface IpWhoisDAO {	
 	
-	List<WhoIsNode<Long>> findWhoisByIp(Long intIpAddress, int isCurrentData) throws SQLException;
+	List<WhoIsNode<Long>> findWhoisByIp(Long intIpAddress, boolean isCurrentData) throws SQLException;
 	
 	List<WhoIsNode<Long>> findWhoisByCity(String city);
 	

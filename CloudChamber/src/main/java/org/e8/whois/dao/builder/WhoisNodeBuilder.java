@@ -50,7 +50,7 @@ public class WhoisNodeBuilder {
 			whoisNode.setUpdatedDate(updateddate);
 		}
 
-		whoisNode.setIsCurrentData(resultSet.getInt(24));
+		whoisNode.setIsCurrentData(resultSet.getBoolean(24));
 
 		return whoisNode;
 	}
@@ -93,7 +93,7 @@ public class WhoisNodeBuilder {
 
 	public static List<OrganisationTech> setTechContactListValues(ResultSet resultSet) throws SQLException {
 		List<OrganisationTech> techContactList = new ArrayList<OrganisationTech>();
-		while(resultSet.next()){
+		while(resultSet!=null&&resultSet.next()){
 			OrganisationTech orgTech = new OrganisationTech();
 
 			orgTech.setOrgTechHandle(resultSet.getString(3));
@@ -111,7 +111,7 @@ public class WhoisNodeBuilder {
 
 	public static List<OrganisationAbuse> setAbuseContactListValues(ResultSet resultSet) throws SQLException {
 		List<OrganisationAbuse> abuseContactList = new ArrayList<OrganisationAbuse>();
-		while(resultSet.next()){
+		while(resultSet!=null&&resultSet.next()){
 			OrganisationAbuse orgAbuse = new OrganisationAbuse();
 
 			orgAbuse.setOrgAbuseHandle(resultSet.getString(3));

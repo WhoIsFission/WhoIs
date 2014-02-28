@@ -11,3 +11,4 @@ database:
   # the JDBC URL
   url: jdbc:mysql://localhost/whoisdev
   # any properties specific to your JDBC driver:
+  name: mysql

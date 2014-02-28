@@ -48,7 +48,7 @@ public static IpWhoisDAO getInstance(WhoIsConfiguration conf){
 	return IPWhoIsDAO;
 }
 //why not boolean
-	public List<WhoIsNode<Long>> findWhoisByIp(Long intIpAddress, int isCurrentData) throws SQLException {
+	public List<WhoIsNode<Long>> findWhoisByIp(Long intIpAddress, boolean isCurrentData) throws SQLException {
 		List<WhoIsNode<Long>> whoisNodeList = null;
 		Connection connection = null;
 		try{
@@ -56,7 +56,7 @@ public static IpWhoisDAO getInstance(WhoIsConfiguration conf){
 
 			String selectQuery = "select * from IPWHOIS ip where is_current_data = ? and ? between ip.ip_start_address and ip.ip_end_address";
 			PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
-			preparedStatement.setInt(1, isCurrentData);
+			preparedStatement.setBoolean(1, isCurrentData);
 			preparedStatement.setLong(2, intIpAddress);
 
 			ResultSet resultSet = preparedStatement.executeQuery(selectQuery);						
@@ -76,7 +76,7 @@ public static IpWhoisDAO getInstance(WhoIsConfiguration conf){
 		List<WhoIsNode<Long>> whoisNodeList = new ArrayList<WhoIsNode<Long>>();
 		WhoIsNode<Long> whoisNode = null;
 
-		while (resultSet.next()) {	     
+		while (resultSet!=null&&resultSet.next()) {	     
 			whoisNode = WhoisNodeBuilder.setWhoIsNodeValues(resultSet);
 			Organisation org= WhoisNodeBuilder.setOrganisationValues(resultSet);
 			whoisNode.setOrg(org);
