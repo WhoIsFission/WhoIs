@@ -9,7 +9,7 @@ public class WhoIsClient {
 	public static String callCommandRestClient(String aCommand){
 		StringBuffer response=new StringBuffer();
 		try {
-			Process process=Runtime.getRuntime().exec(aCommand);
+			Process process=Runtime.getRuntime().exec("whois "+aCommand);
 			BufferedReader bufReader=new BufferedReader(new InputStreamReader(process.getInputStream()));
 			String str;
 			while((str=bufReader.readLine())!=null){
@@ -26,10 +26,4 @@ public class WhoIsClient {
 		}
 		return response.toString();
 	}
-	
-	
-	public static void main(String[] args){
-		System.out.println(callCommandRestClient("whois 192.168.0.1"));
-	}
-	
 }
