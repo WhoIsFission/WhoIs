@@ -160,7 +160,7 @@ static{
 		  case WHOIS_ORGID_PATTERN:
 			  node.getOrg().setOrgId(aValue);break;
 		  case WHOIS_ORGADDRESS_PATTERN:
-			  node.getOrg().setAddress(node.getOrg().getAddress()+System.getProperty("line.separator")+aValue);break; 
+			  node.getOrg().setAddress((node.getOrg().getAddress()==null?"":node.getOrg().getAddress()+", ")+aValue);break; 
 		  case WHOIS_ORGCITY_PATTERN:
 			  node.getOrg().setCity(aValue);break;
 		  case WHOIS_ORGSTATE_PATTERN:
@@ -187,7 +187,7 @@ static{
 		  case WHOIS_ORGTECHADDRESS_PATTERN:
 			  len=node.getOrgTech().size();
 			  orgTech=node.getOrgTech().get(len-1);
-			  orgTech.setOrgTechAdrress(aValue);
+			  orgTech.setOrgTechAdrress((orgTech.getOrgTechAdrress()==null?"":orgTech.getOrgTechAdrress()+", ")+aValue);
 			  break;
 		  case WHOIS_ORGTECHEMAIL_PATTERN:
 			  len=node.getOrgTech().size();
@@ -217,7 +217,7 @@ static{
 		  case WHOIS_ORGABUSEADDRESS_PATTERN:
 			  len=node.getOrgAbuse().size();
 			  orgAbuse=node.getOrgAbuse().get(len-1);
-			  orgAbuse.setOrgAbuseAddress(aValue);
+			  orgAbuse.setOrgAbuseAddress((orgAbuse.getOrgAbuseAddress()==null?"":orgAbuse.getOrgAbuseAddress()+", ")+aValue);
 			  break;
 		  case WHOIS_ORGABUSEEMAIL_PATTERN:
 			  len=node.getOrgAbuse().size();

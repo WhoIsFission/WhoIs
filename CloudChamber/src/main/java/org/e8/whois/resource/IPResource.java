@@ -1,22 +1,19 @@
 package org.e8.whois.resource;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Map;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.e8.whois.configuration.WhoIsConfiguration;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.yammer.dropwizard.config.Configuration;
+import org.e8.whois.model.WhoIsNode;
 
 
 
 @Path("/whois")
+//@Produces(MediaType.TEXT_XML)
 public class IPResource {
 
 	private WhoIsConfiguration conf;
@@ -28,8 +25,8 @@ public class IPResource {
 	
 	@GET
 	@Path("/ip")
-	//@Produces(MediaType.APPLICATION_XML)
-	public String getWhoIsIP(@QueryParam("ip") String ipAddress) throws IOException{
+	//@Produces(MediaType.TEXT_XML)
+	public String  getWhoIsIP(@QueryParam("ip") String ipAddress) throws Exception{
 		return ResourceCacheDB.getResponseFromCache(ipAddress,conf);
 	}
 }

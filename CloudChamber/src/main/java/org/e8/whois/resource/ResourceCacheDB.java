@@ -1,12 +1,24 @@
 package org.e8.whois.resource;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.transform.Result;
 
 import org.e8.whois.cache.WhoisCacheTree;
 import org.e8.whois.configuration.WhoIsConfiguration;
 import org.e8.whois.dao.DAOFactory;
 import org.e8.whois.dao.IpWhoisDAO;
 import org.e8.whois.dao.impl.IpWhoisDAOImpl;
+import org.e8.whois.model.Organisation;
+import org.e8.whois.model.OrganisationAbuse;
+import org.e8.whois.model.OrganisationTech;
 import org.e8.whois.model.WhoIsNode;
 import org.e8.whois.parser.WhoIsParser;
 
@@ -15,15 +27,16 @@ import com.yammer.dropwizard.config.Configuration;
 public class ResourceCacheDB {
 	
 	private Configuration conf;
-	
-	public static String getResponseFromCache(String ipAddress,final WhoIsConfiguration conf) throws IOException{
+	//WhoIsNode<Long>
+	public static String getResponseFromCache(String ipAddress,final WhoIsConfiguration conf) throws IOException, JAXBException{
 		
 		final WhoisCacheTree cache=WhoisCacheTree.getCacheInstance();
 		
 		Long ip=ipToLong(ipAddress);
 		WhoIsNode node=cache.searchSpecificInterval(ip);
 		if(node!=null){
-		return buildResponse(node);	
+		//return node;
+			return buildResponse(node);
 		}
 		final WhoIsNode<Long> responseNode=WhoIsParser.parseWhoIsResponse(ipAddress);
 
@@ -32,7 +45,13 @@ public class ResourceCacheDB {
 
 			public void run() {
 				// TODO Auto-generated method stub
+			try {
 				persistToDB(responseNode,conf);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+				 
 			}
 			
 		}).start();
@@ -48,6 +67,8 @@ public class ResourceCacheDB {
 		}).start();
 		
 		
+		//return responseNode;
+		
 		return buildResponse(responseNode);
 		
 	}
@@ -56,11 +77,13 @@ public class ResourceCacheDB {
 	 * Persisting into DB
 	 * 
 	 * @param responseNode
+	 * @throws Exception 
 	 */
-	private static void persistToDB(WhoIsNode<Long> aNode,WhoIsConfiguration conf){
+	private static void persistToDB(WhoIsNode<Long> aNode,WhoIsConfiguration conf) throws Exception{
 		IpWhoisDAO whoisDAO=DAOFactory.getDAO(conf);
 		if(whoisDAO!=null){
-		whoisDAO.updateWhoisByIp(aNode);
+		whoisDAO.updateWhoisByIpToHistoric(aNode);
+		whoisDAO.insertWhoisByIp(aNode);
 		}
 	}
 	/**
@@ -117,11 +140,24 @@ public class ResourceCacheDB {
 	 
 		}
 	 
-	 private static String buildResponse(WhoIsNode<Long> node){
+	 private static String buildResponse(WhoIsNode<Long> node) throws JAXBException, IOException{
 		 
 		 //TODO building response based on the format of responseNode
-		 return "Net name is "+node.getNetName()+" Origin ASN : "+node.getOriginAS()
-				 +"last updated on : "+node.getUpdatedDate()+"Org name : "+node.getOrg().getOrgName();
+		 JAXBContext jaxbContext=JAXBContext.newInstance(new Class[]{WhoIsNode.class,Organisation.class,
+				 												OrganisationAbuse.class,OrganisationTech.class});
+		 Marshaller marshaller=jaxbContext.createMarshaller();
+		 ByteArrayOutputStream os=new ByteArrayOutputStream();
+		 marshaller.marshal(node, os);
+		 byte[] bytes=os.toByteArray();
+		 os.close();
+		 BufferedReader bufReader=new BufferedReader(new InputStreamReader(new ByteArrayInputStream(bytes)));
+		 StringBuffer strBuf=new StringBuffer();
+		 String str;
+		 while((str=bufReader.readLine())!=null){
+			 strBuf.append(str);
+			 strBuf.append(System.getProperty("line.separator"));
+		 }
+		 return strBuf.toString();
 	 }
 
 }

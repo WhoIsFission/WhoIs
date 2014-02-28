@@ -9,33 +9,33 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name="IPInfo")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name="ipInfo")
+@XmlAccessorType(XmlAccessType.NONE)
 public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 	@XmlElement(name="startAddress")
 	private String startAddress;
 	@XmlElement(name="endAddress")
 	private String EndAddress;
 	
-@XmlElement(name="ASN")
+@XmlElement(name="asn")
 	private String originAS;
-@XmlElement(name="NetName")
+@XmlElement(name="netName")
 	private String netName;
-@XmlElement(name="NetHandle")
+@XmlElement(name="netHandle")
 	private String netHandle;
-@XmlElement(name="Parent")
+@XmlElement(name="parent")
 	private String parent;
-@XmlElement(name="NetType")
+@XmlElement(name="netType")
 	private String netType;
-@XmlElement(name="Description")
+@XmlElement(name="description")
 	private String description;
-@XmlElement(name="DataSource")
+@XmlElement(name="dataSource")
 	private String dataSource;
-@XmlElement(name="RegistrationDate")
+@XmlElement(name="registrationDate")
 	private Date regDate;
-@XmlElement(name="UpdatedDate")
+@XmlElement(name="updatedDate")
 	private Date updatedDate;
-@XmlElement(name="Reference")
+@XmlElement(name="reference")
 	private String ref;
 	private boolean isCurrentData =true;//1 implies current data 0 - historic data// whynot boolean
 	private String rawResponse;
