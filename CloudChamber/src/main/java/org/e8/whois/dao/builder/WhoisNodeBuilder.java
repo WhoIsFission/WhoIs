@@ -51,7 +51,7 @@ public class WhoisNodeBuilder {
 		}
 
 		whoisNode.setIsCurrentData(resultSet.getBoolean(24));
-
+		whoisNode.setRawResponse(resultSet.getString(26));
 		return whoisNode;
 	}
 
@@ -194,6 +194,7 @@ public class WhoisNodeBuilder {
 		}
 		preparedStatement.setBoolean(24,whoisNode.getIsCurrentData());
 		preparedStatement.setTimestamp(25,new java.sql.Timestamp(new Date().getTime()));
+		preparedStatement.setString(26,whoisNode.getRawResponse());
 	}
 
 	public static void insertTechContactToDbValues(WhoIsNode<Long> whoisNode,PreparedStatement preparedStatement) throws SQLException {

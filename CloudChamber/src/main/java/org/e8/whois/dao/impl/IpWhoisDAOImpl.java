@@ -194,7 +194,7 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 		logger.debug("Updating IPWHOIS Master table data by Ipaddress");
 		try{
 			connection = connectDataBase();
-			String insertQuery = "INSERT INTO IPWHOIS VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String insertQuery = "INSERT INTO IPWHOIS VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
 			WhoisNodeBuilder.insertWhoisToDbValues(whoisNode, preparedStatement);
 			preparedStatement.executeUpdate();
