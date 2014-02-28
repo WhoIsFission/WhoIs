@@ -7,7 +7,7 @@ import org.e8.whois.model.WhoIsNode;
 
 public interface IpWhoisDAO {	
 	
-	List<WhoIsNode<Long>> findWhoisByIp(Long intIpAddress, boolean isCurrentData) throws SQLException;
+	List<WhoIsNode<Long>> findWhoisByIp(Long ipAddress, boolean isCurrentData) throws SQLException;
 	
 	List<WhoIsNode<Long>> findWhoisByCity(String city);
 	
@@ -15,5 +15,7 @@ public interface IpWhoisDAO {
 	
 	List<WhoIsNode<Long>> findAllWhoisByIpData() throws Exception;
 	
-	void updateWhoisByIp(WhoIsNode<Long> aNode);
+	void updateWhoisByIpToHistoric(WhoIsNode<Long> whoisNode) throws Exception;
+	
+	void insertWhoisByIp(WhoIsNode<Long> whoisNode) throws Exception;
 }
