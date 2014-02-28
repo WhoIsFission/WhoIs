@@ -2,22 +2,41 @@ package org.e8.whois.model;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organisation {
 
+	@XmlElement(name="name")
 	private String orgName;
+	@XmlElement(name="Id")
 	private String orgId;
+	@XmlElement(name="address")
 	private String address;
+	@XmlElement(name="city")
 	private String city;
+	@XmlElement(name="state")
 	private String state;
+	@XmlElement(name="postalcode")
 	private String postalCode;
+	@XmlElement(name="country")
 	private String country;
+	@XmlElement(name="registrationDate")
 	private Date regDate;
+	@XmlElement(name="updatedDate")
 	private Date updatedDate;
+	@XmlElement(name="phone")
 	private String phoneNo;
+	@XmlElement(name="fax")
 	private String faxNo;
+	@XmlElement(name="reference")
 	private String ref;
+	@XmlElement(name="email")
 	private String email;
-	
+
 	public String getEmail() {
 		return email;
 	}

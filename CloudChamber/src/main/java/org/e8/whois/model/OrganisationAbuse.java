@@ -1,12 +1,25 @@
 package org.e8.whois.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class OrganisationAbuse {
 
+	@XmlElement(name="abuseHandle")
 	private String orgAbuseHandle;
+	@XmlElement(name="abuseName")
 	private String orgAbuseName;
+	@XmlElement(name="abusePhone")
 	private String orgAbusePhone;
+	@XmlElement(name="abuseEmail")
 	private String orgAbuseEmail;
+	@XmlElement(name="abuseReference")
 	private String orgAbuseRef;
+	@XmlElement(name="abuseAddress")
 	private String orgAbuseAddress;
 	private boolean isCurrentdata=true;
 

@@ -3,19 +3,39 @@ package org.e8.whois.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name="IPInfo")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
-
-
+	@XmlElement(name="startAddress")
+	private String startAddress;
+	@XmlElement(name="endAddress")
+	private String EndAddress;
+	
+@XmlElement(name="ASN")
 	private String originAS;
+@XmlElement(name="NetName")
 	private String netName;
+@XmlElement(name="NetHandle")
 	private String netHandle;
+@XmlElement(name="Parent")
 	private String parent;
+@XmlElement(name="NetType")
 	private String netType;
+@XmlElement(name="Description")
 	private String description;
+@XmlElement(name="DataSource")
 	private String dataSource;
+@XmlElement(name="RegistrationDate")
 	private Date regDate;
+@XmlElement(name="UpdatedDate")
 	private Date updatedDate;
+@XmlElement(name="Reference")
 	private String ref;
 	private boolean isCurrentData =true;//1 implies current data 0 - historic data// whynot boolean
 	
@@ -50,6 +70,7 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
+	
 	public T low;
     public T high;
     public void setLow(T low) {
@@ -61,9 +82,11 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 		this.max=high;
 		this.height=1;
 	}
-
+@XmlAnyElement(lax=true)
 	private Organisation org;
-    private List<OrganisationAbuse> orgAbuse;
+@XmlAnyElement(lax=true)
+private List<OrganisationAbuse> orgAbuse;
+@XmlAnyElement(lax=true)
     private List<OrganisationTech> orgTech;
     
     public Organisation getOrg() {
@@ -173,6 +196,22 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 
 	public void setDataSource(String dataSource) {
 		this.dataSource = dataSource;
+	}
+
+	public String getStartAddress() {
+		return startAddress;
+	}
+
+	public void setStartAddress(String startAddress) {
+		this.startAddress = startAddress;
+	}
+
+	public String getEndAddress() {
+		return EndAddress;
+	}
+
+	public void setEndAddress(String endAddress) {
+		EndAddress = endAddress;
 	}
 	
 	

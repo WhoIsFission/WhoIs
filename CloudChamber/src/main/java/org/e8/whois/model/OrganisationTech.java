@@ -1,14 +1,28 @@
 package org.e8.whois.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class OrganisationTech {
 
+	@XmlElement(name="techHandle")
 	private String orgTechHandle;
+	@XmlElement(name="techName")
 	private String orgTechName;
+	@XmlElement(name="techPhone")
 	private String orgTechPhone;
+	@XmlElement(name="techEmail")
 	private String orgTechEmail;
+	@XmlElement(name="techReference")
 	private String orgTechRef;
+	@XmlElement(name="techFax")
 	private String orgTechFax;
-	private String orgAdrress;
+	@XmlElement(name="techAddress")
+	private String orgTechAdrress;
 	private boolean isCurrentdata=true;
 
 	
@@ -18,11 +32,11 @@ public class OrganisationTech {
 	public void setCurrentdata(boolean isCurrentdata) {
 		this.isCurrentdata = isCurrentdata;
 	}
-	public String getOrgAdrress() {
-		return orgAdrress;
+	public String getOrgTechAdrress() {
+		return orgTechAdrress;
 	}
-	public void setOrgAdrress(String orgAdrress) {
-		this.orgAdrress = orgAdrress;
+	public void setOrgTechAdrress(String orgTechAdrress) {
+		this.orgTechAdrress = orgTechAdrress;
 	}
 	public String getOrgTechHandle() {
 		return orgTechHandle;
