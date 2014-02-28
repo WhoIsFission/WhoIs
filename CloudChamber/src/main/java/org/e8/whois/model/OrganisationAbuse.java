@@ -8,7 +8,15 @@ public class OrganisationAbuse {
 	private String orgAbuseEmail;
 	private String orgAbuseRef;
 	private String orgAbuseAddress;
+	private boolean isCurrentdata=true;
+
 	
+	public boolean isCurrentdata() {
+		return isCurrentdata;
+	}
+	public void setCurrentdata(boolean isCurrentdata) {
+		this.isCurrentdata = isCurrentdata;
+	}
 	public String getOrgAbuseAddress() {
 		return orgAbuseAddress;
 	}

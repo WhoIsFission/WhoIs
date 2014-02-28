@@ -9,7 +9,15 @@ public class OrganisationTech {
 	private String orgTechRef;
 	private String orgTechFax;
 	private String orgAdrress;
+	private boolean isCurrentdata=true;
+
 	
+	public boolean isCurrentdata() {
+		return isCurrentdata;
+	}
+	public void setCurrentdata(boolean isCurrentdata) {
+		this.isCurrentdata = isCurrentdata;
+	}
 	public String getOrgAdrress() {
 		return orgAdrress;
 	}
