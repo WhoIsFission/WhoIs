@@ -5,6 +5,7 @@ package org.e8.whois.cache;
  * and provides mechanism of searching specific, generic and all ranges of IP address.
  * 
  */
+import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -210,6 +211,9 @@ public WhoIsNode searchSpecificInterval(T keySearch){
  * 
  */
 private WhoIsNode searchSpecificIntervalHelper(WhoIsNode<T> nod,T keySearch){
+	if(nod==null)
+		return null;
+	
 	WhoIsNode<T> left=null;
 	WhoIsNode<T> right=null;
 	WhoIsNode<T> curr=null;
@@ -258,6 +262,9 @@ public WhoIsNode searchGenericInterval(T keySearch){
  */
 
 private WhoIsNode searchGenericIntervalHelper(WhoIsNode<T> nod,T keySearch){
+	if(nod==null)
+		return null;
+	
 	WhoIsNode<T> left=null;
 	WhoIsNode<T> right=null;
 	WhoIsNode<T> curr=null;
@@ -307,7 +314,8 @@ public Set<WhoIsNode> setOfIntervalSearch(T keySearch){
  */
 
 private Set<WhoIsNode> intervalSearchForListHelper(WhoIsNode<T> nod,T keySearch){
-    
+    if(nod==null)
+    	return Collections.EMPTY_SET;
     Set<WhoIsNode> setOfNodes=new TreeSet<WhoIsNode>();
     	if(isInside(nod, keySearch)){
     		setOfNodes.add(nod);
@@ -361,6 +369,9 @@ public void deleteCache(){
  * 
  */
 private DeleteWhoisEntry<T> deleteSpecificInterval(WhoIsNode<T> nod,WhoIsNode<T> parent,T keySearch){
+	if(nod==null)
+		return null;
+	
 	DeleteWhoisEntry<T> left=null;
 	DeleteWhoisEntry<T> right=null;
 	DeleteWhoisEntry<T> curr=null;
@@ -411,20 +422,32 @@ private void deleteCacheEntry(WhoIsNode<T> node,WhoIsNode<T> parent){
 	
 		//TODO delete it
 		if(node.left==null&&node.right==null){
+			if(parent!=null){
 			if(parent.left==node){
 				parent.left=null;
 			}else 
 				parent.right=null;
+			}else{
+				root=null;
+			}
 		}else if(node.left==null){
+			if(parent!=null){
 			if(parent.left==node){
 				parent.left=node.right;
 			}else 
 				parent.right=node.right;
+			}else{
+				root=node.right;
+			}
 		}else if(node.right==null){
+			if(parent!=null){
 			if(parent.left==node){
 				parent.left=node.left;
 			}else 
 				parent.right=node.left;
+			}else{
+				root=node.left;
+			}
 			}else{
 				WhoIsNode<T> nodeToInsert=getSucessorNode(node,null);
 				if(parent!=null){
@@ -442,8 +465,7 @@ private void deleteCacheEntry(WhoIsNode<T> node,WhoIsNode<T> parent){
 			}
 		root=balanceTree(root);
 		node=null;
-	
-	
+		
 }
 
 /*

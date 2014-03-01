@@ -135,7 +135,8 @@ private List<OrganisationAbuse> orgAbuse;
     public T max;
     public int height;
     public WhoIsNode(){
-    
+    this.left=null;//changes
+    this.right=null;//changes
     }
     public WhoIsNode(T l, T h){
         this.low=l;
