@@ -1,29 +1,56 @@
 package org.e8.whois.client;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WhoIsClient {
 
-	public static String callCommandRestClient(String aCommand){
-		StringBuffer response=new StringBuffer();
-		try {
-			Process process=Runtime.getRuntime().exec("whois "+aCommand);
-			BufferedReader bufReader=new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String str;
-			while((str=bufReader.readLine())!=null){
-				response.append(str);
-				response.append(System.getProperty("line.separator"));
-			}
-			process.waitFor();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			throw new RuntimeException("IO Exception occured",e);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			throw new RuntimeException("Interrupted Exception occured",e);
+	private static final String IANA="whois.iana.org";
+	private static String PATTERN="whois:\\s(.*)";
+
+
+	public static String callCommandRestClient(String aIpAddress) throws IOException{
+		String response=callCommandRestClient(IANA, aIpAddress);
+		Pattern pattern=Pattern.compile(PATTERN);
+		Matcher matcher=pattern.matcher(response);
+		System.out.println(response);
+		String whoisServer=null;
+		if(matcher.find()){
+			whoisServer=matcher.group(1).trim();
 		}
-		return response.toString();
+		if(whoisServer!=null){
+			return callCommandRestClient(whoisServer, aIpAddress);
+		}else{
+			return "No whois data found";
+		}
 	}
+	
+
+	private static String callCommandRestClient(String aServer,String aIpAddress) throws IOException{
+		StringBuffer strBuf=new StringBuffer("");
+		aIpAddress=aIpAddress+"\r\n";// needed as whois protocol requirements
+		Socket socket=new Socket();
+		socket.connect(new InetSocketAddress(aServer,43));
+		DataOutputStream dsOut=new DataOutputStream(socket.getOutputStream());
+		dsOut.write(aIpAddress.getBytes());
+		BufferedReader bufRead=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		String str="";
+		while((str=bufRead.readLine())!=null){
+			strBuf.append(str);
+			strBuf.append(System.getProperty("line.separator"));
+		}
+		bufRead.close();
+		socket.close();
+
+		return strBuf.toString();
+	}
+
 }
