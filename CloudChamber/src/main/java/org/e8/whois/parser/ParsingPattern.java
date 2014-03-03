@@ -1,5 +1,11 @@
 package org.e8.whois.parser;
 
+/***
+ * ParsingPattern enum is used for parsing different patterns.
+ * 
+ * @author Abhijit
+ *
+ */
 enum ParsingPattern {
 
 	  WHOIS_NETRANGE_PATTERN

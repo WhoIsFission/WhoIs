@@ -18,6 +18,7 @@ private static Logger logger=LoggerFactory.getLogger(BuildCache.class);
 
 public static void cacheBuild(WhoIsConfiguration conf) throws Exception{
 	//TODO : query DAO to get list of WhoIs nodes and call
+	if(logger.isDebugEnabled())
 	logger.debug("Building cache tree from currently valid DB records ");
 	
 	IpWhoisDAO daoInstance=DAOFactory.getDAO(conf);
@@ -27,8 +28,11 @@ public static void cacheBuild(WhoIsConfiguration conf) throws Exception{
 		for(WhoIsNode<Long> node:lstNodes){
 			cacheTree.insert(node);
 		}
+		if(logger.isDebugEnabled())
 		logger.debug("Heihgt of tree : "+cacheTree.getHeight());	
 	}
+	
+	if(logger.isDebugEnabled())
 	logger.debug("Cache tree built");
 }
 

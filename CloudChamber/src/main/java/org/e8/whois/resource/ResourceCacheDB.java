@@ -14,19 +14,43 @@ import org.e8.whois.cache.WhoisCacheTree;
 import org.e8.whois.configuration.WhoIsConfiguration;
 import org.e8.whois.dao.DAOFactory;
 import org.e8.whois.dao.IpWhoisDAO;
+import org.e8.whois.exceptionHandling.WhoIsException;
 import org.e8.whois.model.Organisation;
 import org.e8.whois.model.OrganisationAbuse;
 import org.e8.whois.model.OrganisationTech;
 import org.e8.whois.model.WhoIsNode;
 import org.e8.whois.parser.WhoIsParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.yammer.dropwizard.config.Configuration;
 
+/***
+ * Resource Cache DB is used for querying local cache tree and return JAXB marshalled whois node. 
+ * Otherwise query respective RIR for getting response before persisting them to DB and to build
+ *  cache.
+ * 
+ * @author Abhijit
+ *
+ */
 public class ResourceCacheDB {
 	
+	private final static Logger logger=LoggerFactory.getLogger(ResourceCacheDB.class);
 	private Configuration conf;
-	//WhoIsNode<Long>
-	public static String getResponseFromCache(String ipAddress,final WhoIsConfiguration conf) throws IOException, JAXBException{
+	
+	/**
+	 * Gets response from cache tree for a given IP address. If not found then searches in RIRs and finally store them in DB and cache.
+	 * 
+	 * 
+	 * @param ipAddress
+	 * @param conf
+	 * @return response xml
+	 * @throws WhoIsException 
+	 * 
+	 */
+	public static String getResponseFromCache(String ipAddress,final WhoIsConfiguration conf) throws WhoIsException{
+		if(logger.isDebugEnabled())
+		logger.debug("Started building response object from cache tree");
 		
 		final WhoisCacheTree cache=WhoisCacheTree.getCacheInstance();
 		
@@ -36,10 +60,18 @@ public class ResourceCacheDB {
 		//return node;
 			return buildResponse(node);
 		}
+		
+		if(logger.isDebugEnabled())
+		logger.debug("Cache miss. Parsing whois information by calling whois client");
+		
 		final WhoIsNode<Long> responseNode=WhoIsParser.parseWhoIsResponse(ipAddress);
 
+		
 		if(responseNode!=null){
 			// To start thread for persisting into DB
+			if(logger.isDebugEnabled())
+			logger.debug("Persisting to DB by spawning a new thread");
+			
 			new Thread(new Runnable(){
 
 				public void run() {
@@ -55,6 +87,8 @@ public class ResourceCacheDB {
 
 			}).start();
 
+			if(logger.isDebugEnabled())
+			logger.debug("Inserting whois node into cache tree");
 			//To start thread for building cache
 			new Thread(new Runnable(){
 
@@ -64,16 +98,16 @@ public class ResourceCacheDB {
 				}
 
 			}).start();
-
-
-			//return responseNode;
-		
+			
+			if(logger.isDebugEnabled())
+			logger.debug("Returning Built response object");
+			
 		return buildResponse(responseNode);
 		}
-		//else
-		//{
-			//return "Invalid IP Address";
-		//}
+		
+		if(logger.isDebugEnabled())
+		logger.debug("Returning Built response object");
+		
 		return null;
 	}
 	
@@ -81,13 +115,20 @@ public class ResourceCacheDB {
 	 * Persisting into DB
 	 * 
 	 * @param responseNode
-	 * @throws Exception 
+	 * @throws WhoIsException 
+	 * 
 	 */
-	private static void persistToDB(WhoIsNode<Long> aNode,WhoIsConfiguration conf) throws Exception{
+	private static void persistToDB(WhoIsNode<Long> aNode,WhoIsConfiguration conf) throws WhoIsException {
+		if(logger.isDebugEnabled())
+		logger.debug("Started persisting into DB");
+		
 		IpWhoisDAO whoisDAO=DAOFactory.getDAO(conf);
 		if(whoisDAO!=null){
 		whoisDAO.updateWhoisByIpToHistoric(aNode);
 		whoisDAO.insertWhoisByIp(aNode);
+		
+		if(logger.isDebugEnabled())
+		logger.debug("Node information has been persisted.");
 		}
 	}
 	/**
@@ -96,6 +137,9 @@ public class ResourceCacheDB {
 	 * @param responseNode
 	 */
 	private static void buildCache(WhoIsNode<Long> aNode,WhoisCacheTree<Long> cache){
+		if(logger.isDebugEnabled())
+		logger.debug("Node information is being inserted into cache tree");
+		
 		cache.insert(aNode);
 	}
 	
@@ -144,13 +188,21 @@ public class ResourceCacheDB {
 	 
 		}
 	 
-	 private static String buildResponse(WhoIsNode<Long> node) throws JAXBException, IOException{
+	 /*
+	  * Private method to build response by using JAXB marshalling.
+	  * 
+	  */
+	 private static String buildResponse(WhoIsNode<Long> node) throws WhoIsException{
 		 
 		 //TODO building response based on the format of responseNode
+			if(logger.isDebugEnabled()) 
+		 logger.debug("Started building response.");
+		try{	
 		 JAXBContext jaxbContext=JAXBContext.newInstance(new Class[]{WhoIsNode.class,Organisation.class,
 				 												OrganisationAbuse.class,OrganisationTech.class});
 		 Marshaller marshaller=jaxbContext.createMarshaller();
 		 ByteArrayOutputStream os=new ByteArrayOutputStream();
+		 marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		 marshaller.marshal(node, os);
 		 byte[] bytes=os.toByteArray();
 		 os.close();
@@ -161,7 +213,20 @@ public class ResourceCacheDB {
 			 strBuf.append(str);
 			 strBuf.append(System.getProperty("line.separator"));
 		 }
+		 
+			if(logger.isDebugEnabled())
+		 logger.debug("Built response object");
+			
 		 return strBuf.toString();
+		 }catch(IOException e){
+			 if(logger.isErrorEnabled())
+					logger.error("I/O exception while writing/reading to/from output source during xml conversion");
+				throw new WhoIsException("I/O exception while writing/reading to/from output source during xml conversion",e);
+		 }catch(JAXBException e){
+			 if(logger.isErrorEnabled())
+					logger.error("JAXB marshalling exception");
+				throw new WhoIsException("Exception converting object to xml",e);
+		 }
 	 }
 
 }

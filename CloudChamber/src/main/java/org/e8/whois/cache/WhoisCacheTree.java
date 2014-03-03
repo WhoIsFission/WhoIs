@@ -10,9 +10,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.e8.whois.model.WhoIsNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WhoisCacheTree<T>{
 
+	private final static Logger logger=LoggerFactory.getLogger(WhoisCacheTree.class);
 	private static WhoisCacheTree cacheInstance;
     private WhoIsNode<T> root;
     /*
@@ -50,9 +53,14 @@ public class WhoisCacheTree<T>{
  * @param h
  */
 	public void insert(WhoIsNode<T> node){
+		if(logger.isDebugEnabled())
+			logger.debug("Insertion of node with start address: "+node.getStartAddress()+" has started");
+		
 		if(node==null)
 			return;
         root=insert(root,node, node.low, node.high);
+        
+        logger.debug("Insertion of node with start address: "+node.getStartAddress()+" is completed");
     }
 	
 	/*
@@ -200,9 +208,15 @@ public class WhoisCacheTree<T>{
  * @return
  */
 public WhoIsNode searchSpecificInterval(T keySearch){
+	if(logger.isDebugEnabled())
+		logger.debug("Started searching specific address range for key : "+keySearch);
+	
 	if(root==null)
 		return null;
+	
+	
 	return searchSpecificIntervalHelper(root, keySearch);
+	
 }
 
 
@@ -251,6 +265,10 @@ private WhoIsNode searchSpecificIntervalHelper(WhoIsNode<T> nod,T keySearch){
  * @return
  */
 public WhoIsNode searchGenericInterval(T keySearch){
+	
+
+	if(logger.isDebugEnabled())
+		logger.debug("Started searching for generic IP range for key : "+keySearch);
 	if(root==null)
 		return null;
 	return searchGenericIntervalHelper(root, keySearch);
@@ -262,6 +280,7 @@ public WhoIsNode searchGenericInterval(T keySearch){
  */
 
 private WhoIsNode searchGenericIntervalHelper(WhoIsNode<T> nod,T keySearch){
+	
 	if(nod==null)
 		return null;
 	
@@ -302,6 +321,8 @@ private WhoIsNode searchGenericIntervalHelper(WhoIsNode<T> nod,T keySearch){
  */
 
 public Set<WhoIsNode> setOfIntervalSearch(T keySearch){
+	if(logger.isDebugEnabled())
+		logger.debug("Started searching all IP ranges for key : "+keySearch);
 	if(root==null)
 		return null;
 	return intervalSearchForListHelper(root, keySearch);
@@ -408,9 +429,15 @@ private DeleteWhoisEntry<T> deleteSpecificInterval(WhoIsNode<T> nod,WhoIsNode<T>
  * @param keySearch
  */
 public void deleteCacheEntry(T keySearch){
+	if(logger.isDebugEnabled())
+		logger.debug("Started deleting for cache entry for key : "+keySearch);
+	
 	DeleteWhoisEntry<T> delNode=deleteSpecificInterval(root,null, keySearch);
 	if(delNode!=null)
 	deleteCacheEntry(delNode.aNode, delNode.aParent);
+	
+	if(logger.isDebugEnabled())
+		logger.debug("Deleting of cache entry completed for key : "+keySearch);
 }
 
 /*

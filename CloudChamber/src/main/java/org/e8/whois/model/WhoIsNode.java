@@ -8,6 +8,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * Model class for root WhoIsNode.
+ *
+ */
 @XmlRootElement(name="ipInfo")
 @XmlAccessorType(XmlAccessType.NONE)
 public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {

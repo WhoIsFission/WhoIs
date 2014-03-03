@@ -16,9 +16,17 @@ import org.e8.whois.model.Organisation;
 import org.e8.whois.model.OrganisationAbuse;
 import org.e8.whois.model.OrganisationTech;
 import org.e8.whois.model.WhoIsNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/***
+ * Lacnic Parser is used to parse response text from Lacnic Registry
+ * 
+ *
+ */
 public class LacnicParser extends IPParser{
 
+	private final static Logger logger=LoggerFactory.getLogger(LacnicParser.class);
 	private static Map<String,ParsingPattern> LACNIC_PARSE_MAP=new HashMap<String,ParsingPattern>();
 
 	static{
@@ -51,6 +59,9 @@ public class LacnicParser extends IPParser{
 	 */
 		public WhoIsNode<Long> parse(String buf) throws IOException {
 			// TODO Auto-generated method stub
+			if(logger.isDebugEnabled())
+				logger.debug("Started parsing by Lacnic parser");
+			
 			WhoIsNode<Long> responseNode=new WhoIsNode<Long>();
 			Organisation org=new Organisation();
 			  List<OrganisationTech> listOrgTech=new ArrayList<OrganisationTech>();
@@ -70,6 +81,9 @@ public class LacnicParser extends IPParser{
 				}
 		
 			}
+		if(logger.isDebugEnabled())
+			logger.debug("Parsed response being returned");
+		
 			return responseNode;
 		}
 		
@@ -85,9 +99,15 @@ public class LacnicParser extends IPParser{
 			SimpleDateFormat parser=new SimpleDateFormat("yyyyMMdd");
 			Date date;
 			if(pattern!=null){
+				
+				if(logger.isDebugEnabled())
+					logger.debug("Started Lacnic parsing for pattern: "+pattern.toString());
 			switch(pattern){
 			// need computation
 			  case WHOIS_NETRANGE_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("NETRANGE pattern encountered");
+		
 				  if(isCidrNotation(aValue)){
 					  aValue=cidrToRange(aValue);
 				  }
@@ -100,26 +120,56 @@ public class LacnicParser extends IPParser{
 				  }
 				  break;
 			  case  WHOIS_DESCR_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("Decription pattern encountered");
+		
 				  node.setDescription(aValue);
 				  break;
 			  case  WHOIS_ORGCOUNTRY_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("Country pattern encountered");
+		
 				  node.getOrg().setCountry(aValue);
 				  break;
 			  case WHOIS_ORIGINASN_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("ASN pattern encountered");
+		
 				  node.setOriginAS(aValue);break;
 			  case  WHOIS_PARENT_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("Parent pattern encountered");
+		
 				  node.setParent(aValue);break;
 			  case WHOIS_NETNAME_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("NET Name pattern encountered");
+		
 				  node.setNetName(aValue);break;
 			  case WHOIS_DATASOURCE_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("DataSource pattern encountered");
+		
 				  node.setDataSource(aValue);break;
 			  case WHOIS_NETTYPE_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("NET Type pattern encountered");
+		
 				  node.setNetType(aValue);break;
 			  case WHOIS_ORGNAME_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("OrgName pattern encountered");
+		
 				    node.getOrg().setOrgName(aValue);break;	  
 			  case WHOIS_ORGID_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("OrgId pattern encountered");
+		
 				  node.getOrg().setOrgId(aValue);break;
 			  case WHOIS_ORGADDRESS_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("Org Address pattern encountered");
+		
 				  len=node.getOrgTech().size();
 				  if(len>0){
 					   orgTech=node.getOrgTech().get(len-1);
@@ -129,6 +179,9 @@ public class LacnicParser extends IPParser{
 				  
 				  break;
 			  case WHOIS_ORGPHONE_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("Org Phone pattern encountered");
+		
 				  len=node.getOrgTech().size();
 				  if(len>0){
 					   orgTech=node.getOrgTech().get(len-1);
@@ -139,6 +192,9 @@ public class LacnicParser extends IPParser{
 				  
 				  break;
 			  case WHOIS_ORGFAX_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("Org Fax pattern encountered");
+		
 				  len=node.getOrgTech().size();
 				  if(len>0){
 					   orgTech=node.getOrgTech().get(len-1);
@@ -148,13 +204,17 @@ public class LacnicParser extends IPParser{
 				  }				  
 				  break;
 			  case WHOIS_ORGTECHHANDLE_PATTERN:
-			
+				  if(logger.isDebugEnabled())
+					  logger.debug("OrgTech Handle pattern encountered");
 				  
 				  orgTech=new OrganisationTech();
 			        orgTech.setOrgTechHandle(aValue);
 			        node.getOrgTech().add(orgTech);
 			        break;
 			  case WHOIS_ORGTECHNAME_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("OrgTech Name pattern encountered");
+		
 				  len=node.getOrgTech().size();
 				  if(len>0){
 					  orgTech=node.getOrgTech().get(len-1);
@@ -162,6 +222,9 @@ public class LacnicParser extends IPParser{
 				  }
 				  break;
 			  case WHOIS_ORGTECHEMAIL_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("OrgTech Email pattern encountered");
+		
 				  len=node.getOrgTech().size();
 				  if(len>0){
 					  orgTech=node.getOrgTech().get(len-1);
@@ -172,6 +235,9 @@ public class LacnicParser extends IPParser{
 				  break;
 				  // need more checking
 			  case WHOIS_UPDATEDATE_PATTERN:
+				  if(logger.isDebugEnabled())
+					  logger.debug("Updated Date pattern encountered");
+		
 				  try {					  
 					  aValue=aValue.trim();
 					date=parser.parse(aValue);
@@ -187,6 +253,8 @@ public class LacnicParser extends IPParser{
 				  break;
 				  default: break;
 			  }
+			if(logger.isDebugEnabled())
+				  logger.debug("Returning node after setting pattern:"+ pattern.toString());
 			}
 			return node;
 		}

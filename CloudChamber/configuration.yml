@@ -7,8 +7,54 @@ database:
   # the username
   user: root
   # the password
-  password: root
+  password: pass
   # the JDBC URL
   url: jdbc:mysql://localhost/whoisdev
   # any properties specific to your JDBC driver:
   name: mysql
+  
+  # Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: DEBUG
+
+  # Logger-specific levels.
+  #loggers:
+
+    # Overrides the level of com.example.dw.Thing and sets it to DEBUG.
+    #"com.example.dw.Thing": DEBUG
+
+  # Settings for logging to console.
+  console:
+
+    # If true, write log statements to console.
+    enabled: true
+
+    # Do not display log statements below this threshold to stdout.
+    threshold: ALL
+    
+  # Settings for logging to a file.
+  file:
+
+    # If true, write log statements to a file.
+    enabled: true
+
+    # Do not write log statements below this threshold to the file.
+    threshold: ALL
+    # The file to which current statements will be logged.
+    
+    currentLogFilename: ./logs/whois.log
+
+    # When the log file rotates, the archived log will be renamed to this and gzipped. The
+    # %d is replaced with the previous day (yyyy-MM-dd). Custom rolling windows can be created
+    # by passing a SimpleDateFormat-compatible format as an argument: "%d{yyyy-MM-dd-hh}".
+    
+    archivedLogFilenamePattern: ./logs/whois-%d.log.gz
+    #log format
+    logFormat: null
+    # The number of archived files to keep.
+    archivedFileCount: 5
+
+    # The timezone used to format dates. HINT: USE THE DEFAULT, UTC.
+    timeZone: UTC

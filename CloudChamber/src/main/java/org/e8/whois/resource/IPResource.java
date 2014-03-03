@@ -9,6 +9,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.xml.bind.JAXBException;
 
 import org.e8.whois.configuration.WhoIsConfiguration;
+import org.e8.whois.exceptionHandling.WhoIsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,17 +28,10 @@ public class IPResource {
 	
 	@GET
 	@Path("/ip")
-	public String getWhoIsIP(@QueryParam("ip") String ipAddress)  {
+	public String getWhoIsIP(@QueryParam("ip") String ipAddress) throws WhoIsException  {
 		//response.setContentType("text/xml");
-		Resource_Logger.info("executed Resources");
-		try {
+		if(Resource_Logger.isDebugEnabled())
+		Resource_Logger.debug("Executing Whois IP Resource");
 			return ResourceCacheDB.getResponseFromCache(ipAddress,conf)	;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-throw new WebApplicationException(e); 
-} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-	throw new WebApplicationException(e); 
-		}
-	}
+			}
 }

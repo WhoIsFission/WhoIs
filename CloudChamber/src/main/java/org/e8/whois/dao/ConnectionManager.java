@@ -7,9 +7,17 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.e8.whois.configuration.WhoIsConfiguration;
+import org.e8.whois.exceptionHandling.WhoIsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/***
+ * ConnectionManager is used as a connection pool manager with configured no. of connections
+ * to be maintained in a queue.
+ * 
+ * @author Abhijit
+ *
+ */
 public class ConnectionManager {
 
 	private final static Logger logger=LoggerFactory.getLogger(ConnectionManager.class);
@@ -27,20 +35,38 @@ public class ConnectionManager {
 	 * 
 	 * @param conf
 	 * @return ConnectionManager
+	 * @throws WhoIsException 
 	 */
-	public static ConnectionManager getConnectionManager(WhoIsConfiguration conf){
+	public static ConnectionManager getConnectionManager(WhoIsConfiguration conf) throws WhoIsException{
+		if(logger.isDebugEnabled())
 		logger.debug("Getting connection manager instance and initializing Connection queue");
+		
 		if(CONNECTION_MANAGER==null){
 			synchronized(ConnectionManager.class){
 				if(CONNECTION_MANAGER==null){
 					CONNECTION_MANAGER=new ConnectionManager();
 					ConnectionManager.conf=conf;
 					ConnectionManager.MAX_CONNECTION=ConnectionManager.conf.getConnectionPool();
-					try{			CONNECTION_MANAGER.init();
+								try {
+									CONNECTION_MANAGER.init();
+								} catch (ClassNotFoundException e) {
+									// TODO Auto-generated catch block
+									if(logger.isErrorEnabled())
+										logger.error("Class Not found for configured driver class in Cnfiguration.yml");
+									throw new WhoIsException("Driver class not found",e);
+								} catch (SQLException e) {
+									// TODO Auto-generated catch block
+									if(logger.isErrorEnabled())
+										logger.error("SQL exception while initializing connections to pool");
+									throw new WhoIsException("Exception initializing connections",e);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									if(logger.isErrorEnabled())
+										logger.error("SQL exception while initializing connections to pool");
+									throw new WhoIsException("Thread Interrupted initializing connections",e);
+								}
 
-					}catch(Exception e){
-						throw new RuntimeException(e);
-					}
+					
 				}
 			}
 		}
@@ -52,7 +78,9 @@ public class ConnectionManager {
 	 * 
 	 */
 	private void init() throws ClassNotFoundException, SQLException, InterruptedException{
+		if(logger.isDebugEnabled())
 		logger.debug("Fetching DB connection objects and stores them in Connection queue.");
+		
 		Class.forName(conf.getDatabase().getDriverClass());	
 		for(int i=0;i<MAX_CONNECTION;i++){
 			Connection connection=DriverManager.getConnection(conf.getDatabase().getUrl(), conf.getDatabase().getUser(),
@@ -66,24 +94,37 @@ public class ConnectionManager {
  * Fetching Connection object from Connection queue.
  * 
  * @return Connection
+ * @throws WhoIsException
+ * 
  */
-	public Connection getConnection(){
+	public Connection getConnection() throws WhoIsException {
+		if(logger.isDebugEnabled())
 		logger.debug("Retrieving connection object from connection queue.");
-		try{
-			return CONNECTION_QUEUE.take();
-		} catch (InterruptedException e) {
-			throw new RuntimeException("Interrupted fetching connection : ",e);
-		}
+				try {
+					return CONNECTION_QUEUE.take();
+				} catch (InterruptedException e) {
+
+					// TODO Auto-generated catch block
+					if(logger.isErrorEnabled())
+						logger.error("Exception retreiving connection from queue");
+					throw new WhoIsException("Process interrupted while retreiving connection by DAO layer",e);
+				
+				}
+	
 	}
 
 	/**
 	 * Closing connection : Putting connection object back into the queue.
 	 * 
 	 * @param Connection
+	 * @throws WhoIsException 
+	 * 
 	 */
 
-	public void closeConnection(Connection conn){
+	public void closeConnection(Connection conn) throws WhoIsException{
+		if(logger.isDebugEnabled())
 		logger.debug("Putting connection object back into queue.");
+		
 		boolean flag=true;
 		synchronized (CONNECTION_MANAGER) {
 			if(CONNECTION_QUEUE.size()>=MAX_CONNECTION){
@@ -91,11 +132,14 @@ public class ConnectionManager {
 			}
 		}
 		if(flag){
-			try {
-				CONNECTION_QUEUE.put(conn);
-			} catch (InterruptedException e) {
-				throw new RuntimeException("Interrupted fetching connection : ",e);
-			}
+				try {
+					CONNECTION_QUEUE.put(conn);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					if(logger.isErrorEnabled())
+						logger.error("Exception putting connection to connection queue");
+					throw new WhoIsException("Process interrupted while putting connections back to queue",e);
+				}		
 		}
 	}
 }

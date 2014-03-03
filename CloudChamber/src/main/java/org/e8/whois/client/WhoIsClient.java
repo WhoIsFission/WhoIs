@@ -4,20 +4,39 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+/***
+ * WhoIsClient is used for querying RIR's given an IP address. 
+ * It queries IANA registry first to get authentic whois server followed by querying whois server 
+ * for information needed.
+ *
+ *
+ */
 public class WhoIsClient {
 
 	private static final String IANA="whois.iana.org";
 	private static String PATTERN="whois:\\s(.*)";
+	private final static Logger logger=LoggerFactory.getLogger(WhoIsClient.class);
 
-
+	
+	/**
+	 * Call IANA and then respective RIR to fetch information related to an IP address.
+	 * 
+	 * 
+	 * @param aIpAddress
+	 * @return Raw response to parsers
+	 * @throws IOException
+	 */
 	public static String callCommandRestClient(String aIpAddress) throws IOException{
+		if(logger.isDebugEnabled())
+		logger.debug("Started querying IANA and getting actual whois server");
+		
 		String response=callCommandRestClient(IANA, aIpAddress);
 		Pattern pattern=Pattern.compile(PATTERN);
 		Matcher matcher=pattern.matcher(response);
@@ -25,6 +44,7 @@ public class WhoIsClient {
 		if(matcher.find()){
 			whoisServer=matcher.group(1).trim();
 		}
+		
 		if(whoisServer!=null){
 			return callCommandRestClient(whoisServer, aIpAddress);
 		}else{
@@ -32,8 +52,14 @@ public class WhoIsClient {
 		}
 	}
 	
-
+/*
+ * Overloaded method for calling actual whois server for an IP address
+ * 
+ */
 	private static String callCommandRestClient(String aServer,String aIpAddress) throws IOException{
+		if(logger.isDebugEnabled())
+		logger.debug("Querying whois server: "+aServer);
+		
 		StringBuffer strBuf=new StringBuffer("");
 		aIpAddress=aIpAddress+"\r\n";// needed as whois protocol requirements
 		Socket socket=new Socket();
@@ -48,7 +74,9 @@ public class WhoIsClient {
 		}
 		bufRead.close();
 		socket.close();
-
+		if(logger.isDebugEnabled())
+		logger.debug("Returning response from whois server: "+aServer);
+		
 		return strBuf.toString();
 	}
 

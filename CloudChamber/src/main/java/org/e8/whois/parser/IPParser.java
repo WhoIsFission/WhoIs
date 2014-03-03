@@ -2,6 +2,11 @@ package org.e8.whois.parser;
 
 import org.apache.commons.net.util.SubnetUtils;
 
+/***
+ * 
+ * Abstract IPParser for common used methods across custom parsers.
+ *
+ */
 public abstract class IPParser implements Parser{
 
 	/**

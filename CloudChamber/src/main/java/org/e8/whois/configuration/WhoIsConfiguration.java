@@ -7,6 +7,10 @@ import javax.ws.rs.DefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yammer.dropwizard.config.Configuration;
 
+/**
+ * WhoIsConfiguration mapping for configuration.yml
+ *
+ */
 public class WhoIsConfiguration extends Configuration{
 
 	@Valid

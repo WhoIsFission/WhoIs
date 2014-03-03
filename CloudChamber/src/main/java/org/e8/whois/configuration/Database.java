@@ -5,6 +5,10 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Database class for mapping configured DB properties in configuration.yml
+ *
+ */
 public class Database {
 	
 	@Valid

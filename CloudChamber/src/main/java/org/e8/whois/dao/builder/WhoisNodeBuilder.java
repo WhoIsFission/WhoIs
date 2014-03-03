@@ -14,6 +14,12 @@ import org.e8.whois.model.WhoIsNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/***
+ * WhoisNodeBuilder is used to build elements contained in whoIsNode
+ * 
+ * @author Abhijit
+ *
+ */
 public class WhoisNodeBuilder {
 	private final static Logger logger = LoggerFactory.getLogger(WhoisNodeBuilder.class);
 
@@ -25,7 +31,9 @@ public class WhoisNodeBuilder {
 	 * @throws SQLException
 	 */
 	public static WhoIsNode<Long> setWhoIsNodeValues(ResultSet resultSet) throws SQLException {
-logger.debug("Setting whoIs node values");
+		if(logger.isDebugEnabled())
+			logger.debug("Setting whoIs node values");
+		
 		WhoIsNode<Long> whoisNode = new WhoIsNode<Long>();
 
 		whoisNode.setLow(resultSet.getLong(1));
@@ -74,7 +82,9 @@ logger.debug("Setting whoIs node values");
 	 */
 	
 	public static Organisation setOrganisationValues(ResultSet resultSet) throws SQLException {
+		if(logger.isDebugEnabled())
 		logger.debug("Setting Organisation values");
+		
 		Organisation org = new Organisation();
 
 		org.setOrgName(resultSet.getString(13));
@@ -119,8 +129,9 @@ logger.debug("Setting whoIs node values");
 	 */
 	
 	public static List<OrganisationTech> setTechContactListValues(ResultSet resultSet) throws SQLException {
-		
+		if(logger.isDebugEnabled())
 		logger.debug("Setting technical contacts.");
+		
 		List<OrganisationTech> techContactList = new ArrayList<OrganisationTech>();
 		while(resultSet!=null&&resultSet.next()){
 			OrganisationTech orgTech = new OrganisationTech();
@@ -146,7 +157,9 @@ logger.debug("Setting whoIs node values");
 	 * @throws SQLException
 	 */
 	public static List<OrganisationAbuse> setAbuseContactListValues(ResultSet resultSet) throws SQLException {
+		if(logger.isDebugEnabled())
 		logger.debug("Setting abuse contacts list");
+		
 		List<OrganisationAbuse> abuseContactList = new ArrayList<OrganisationAbuse>();
 		while(resultSet!=null&&resultSet.next()){
 			OrganisationAbuse orgAbuse = new OrganisationAbuse();
@@ -172,8 +185,9 @@ logger.debug("Setting whoIs node values");
 	 */
 	
 	public static void insertWhoisToDbValues(WhoIsNode<Long> whoisNode,PreparedStatement preparedStatement) throws SQLException {
-		
+		if(logger.isDebugEnabled())
 		logger.debug("Inserts whois node information to DB tables.");
+		
 		preparedStatement.setLong(1, whoisNode.getLow());
 		preparedStatement.setLong(2, whoisNode.getHigh());
 		preparedStatement.setString(3,whoisNode.getOriginAS());
@@ -253,8 +267,9 @@ logger.debug("Setting whoIs node values");
 	 */
 	
 	public static void insertTechContactToDbValues(WhoIsNode<Long> whoisNode,PreparedStatement preparedStatement) throws SQLException {
-		
+		if(logger.isDebugEnabled())
 		logger.debug("Inserts Technical contact information to DB tables.");
+		
 		List<OrganisationTech> techList = whoisNode.getOrgTech();		
 		for(OrganisationTech tech:techList){
 			preparedStatement.setLong(1, whoisNode.getLow());
@@ -282,8 +297,9 @@ logger.debug("Setting whoIs node values");
 	 */
 
 	public static void insertAbuseContactToDbValues(WhoIsNode<Long> whoisNode,PreparedStatement preparedStatement) throws SQLException {
-	
+		if(logger.isDebugEnabled())
 		logger.debug("Inserts Abuse contact information to DB tables.");
+		
 		List<OrganisationAbuse> abuseList = whoisNode.getOrgAbuse();
 		for(OrganisationAbuse abuse:abuseList){
 			preparedStatement.setLong(1, whoisNode.getLow());

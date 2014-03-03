@@ -17,9 +17,16 @@ import org.e8.whois.model.Organisation;
 import org.e8.whois.model.OrganisationAbuse;
 import org.e8.whois.model.OrganisationTech;
 import org.e8.whois.model.WhoIsNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/***
+ * Arin Parser is used to parse response text from Arin Registry
+ * 
+ *
+ */
 public class ArinParser extends IPParser{
-	
+	private final static Logger logger=LoggerFactory.getLogger(ArinParser.class);
 private final static Map<String,ParsingPattern> ARIN_PARSE_MAP=new HashMap<String,ParsingPattern>();
 static{
 	ARIN_PARSE_MAP.put("NetRange", ParsingPattern.WHOIS_NETRANGE_PATTERN);
@@ -64,6 +71,9 @@ static{
  */
 	public WhoIsNode<Long> parse(String buf) throws IOException {
 		// TODO Auto-generated method stub
+		if(logger.isDebugEnabled())
+			logger.debug("Started parsing by Arin parser");
+		
 		WhoIsNode<Long> responseNode=new WhoIsNode<Long>();
 		Organisation org=new Organisation();
 		  List<OrganisationTech> listOrgTech=new ArrayList<OrganisationTech>();
@@ -83,6 +93,9 @@ static{
 			}
 	
 		}
+	if(logger.isDebugEnabled())
+		logger.debug("Parsed response being returned");
+		
 		return responseNode;
 	}
 	
@@ -98,8 +111,13 @@ static{
 		OrganisationAbuse orgAbuse;
 		int len;
 		if(pattern!=null){
+			if(logger.isDebugEnabled())
+				logger.debug("Started Arin parsing for pattern: "+pattern.toString());
 		switch(pattern){
 		  case WHOIS_NETRANGE_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("NETRANGE pattern encountered");
+			  
 			  if(isCidrNotation(aValue)){
 				  aValue=cidrToRange(aValue);
 			  }
@@ -113,18 +131,30 @@ static{
 			  break;
 			  
 		  case WHOIS_ORIGINASN_PATTERN:
-			  node.setOriginAS(aValue);break;
+			  if(logger.isDebugEnabled())
+				  logger.debug("ASN pattern encountered");
 			  
-		  case WHOIS_NETNAME_PATTERN: 
+			  node.setOriginAS(aValue);break;			  
+		  case WHOIS_NETNAME_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("NET Name pattern encountered");
 			  node.setNetName(aValue);break;
 		  case WHOIS_NETHANDLE_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("NET Handle pattern encountered");
 			  node.setNetHandle(aValue);break;
 		  case WHOIS_PARENT_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("Parent pattern encountered");
+			  
 			  node.setParent(aValue);break;
 		  case WHOIS_NETTYPE_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("NET Type pattern encountered");
 			  node.setNetType(aValue);break;
 		  case WHOIS_REGDATE_PATTERN:
-		
+			  if(logger.isDebugEnabled())
+				  logger.debug("Registration Date pattern encountered");
 			try {
 			 date = datePattern.parse(aValue);
 			} catch (ParseException e) {
@@ -137,7 +167,10 @@ static{
 				node.getOrg().setRegDate(date);
 			break;
 		  case WHOIS_UPDATEDATE_PATTERN:
-			   try {
+			  if(logger.isDebugEnabled())
+				  logger.debug("Updated Date pattern encountered"); 
+			  
+			  try {
 				date=datePattern.parse(aValue);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -149,6 +182,9 @@ static{
 				   node.getOrg().setUpdatedDate(date);
 			   break;
 		  case WHOIS_REF_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("Reference pattern encountered");
+			  
 			  if(node.getOrg().getOrgName()==null||"".equals(node.getOrg().getOrgName()))
 			  node.setRef(aValue);
 			  else
@@ -156,75 +192,130 @@ static{
 			  
 			  break;
 		  case WHOIS_ORGNAME_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("ORG Name pattern encountered");
+			  
 		    node.getOrg().setOrgName(aValue);break;	  
 		  case WHOIS_ORGID_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("OrgId pattern encountered");
+			  
 			  node.getOrg().setOrgId(aValue);break;
 		  case WHOIS_ORGADDRESS_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("Address pattern encountered");
+			  
 			  node.getOrg().setAddress((node.getOrg().getAddress()==null?"":node.getOrg().getAddress()+", ")+aValue);break; 
 		  case WHOIS_ORGCITY_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("City pattern encountered");
+			  
 			  node.getOrg().setCity(aValue);break;
 		  case WHOIS_ORGSTATE_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("State pattern encountered");
+			  
 			  node.getOrg().setState(aValue);break;
 		  case WHOIS_ORGPOSTAL_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("Postal code pattern encountered");
+			  
 			  node.getOrg().setPostalCode(aValue);break;
 		  case WHOIS_ORGCOUNTRY_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("Country pattern encountered");
+			  
 			  node.getOrg().setCountry(aValue);break;
 		  case WHOIS_ORGTECHHANDLE_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("ORG Tech Handle pattern encountered");
 			   orgTech=new OrganisationTech();
 			  orgTech.setOrgTechHandle(aValue);
 			  node.getOrgTech().add(orgTech);
 			  break;
 		  case WHOIS_ORGTECHNAME_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("ORG Tech Name pattern encountered");
+			  
 			   len=node.getOrgTech().size();
 			   orgTech=node.getOrgTech().get(len-1);
 			   orgTech.setOrgTechName(aValue);
 			   break;
 		  case WHOIS_ORGTECHPHONE_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("ORG Tech Phone pattern encountered");
+			  
 			  len=node.getOrgTech().size();
 			   orgTech=node.getOrgTech().get(len-1);
 			   orgTech.setOrgTechPhone(aValue);
 			   break;
 		  case WHOIS_ORGTECHADDRESS_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("ORG Tech Address pattern encountered");
+			  
 			  len=node.getOrgTech().size();
 			  orgTech=node.getOrgTech().get(len-1);
 			  orgTech.setOrgTechAdrress((orgTech.getOrgTechAdrress()==null?"":orgTech.getOrgTechAdrress()+", ")+aValue);
 			  break;
 		  case WHOIS_ORGTECHEMAIL_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("ORG Tech Email pattern encountered");
+			  
 			  len=node.getOrgTech().size();
 			   orgTech=node.getOrgTech().get(len-1);
 			   orgTech.setOrgTechEmail(aValue);
 			   break;
 		  case WHOIS_ORGTECHREF_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("ORG Tech Reference pattern encountered");
 			  len=node.getOrgTech().size();
 			   orgTech=node.getOrgTech().get(len-1);
 			   orgTech.setOrgTechRef(aValue);
 			   break;
 		  case WHOIS_ORGABUSEHANDLE_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("ORG Abuse Handle pattern encountered");
+			  
 			  orgAbuse=new OrganisationAbuse();
 			  orgAbuse.setOrgAbuseHandle(aValue);
 			  node.getOrgAbuse().add(orgAbuse);
 			  break;
 		  case WHOIS_ORGABUSENAME_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("Org Abuse Name pattern encountered");
+			  
 			  len=node.getOrgAbuse().size();
 			  orgAbuse=node.getOrgAbuse().get(len-1);
 			  orgAbuse.setOrgAbuseName(aValue);
 			  break;
 		  case WHOIS_ORGABUSEPHONE_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("Org Abuse Phone pattern encountered");
+			  
 			  len=node.getOrgAbuse().size();
 			  orgAbuse=node.getOrgAbuse().get(len-1);
 			  orgAbuse.setOrgAbusePhone(aValue);
 			  break;
 		  case WHOIS_ORGABUSEADDRESS_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("Org Abuse Address pattern encountered");
+			  
 			  len=node.getOrgAbuse().size();
 			  orgAbuse=node.getOrgAbuse().get(len-1);
 			  orgAbuse.setOrgAbuseAddress((orgAbuse.getOrgAbuseAddress()==null?"":orgAbuse.getOrgAbuseAddress()+", ")+aValue);
 			  break;
 		  case WHOIS_ORGABUSEEMAIL_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("Org Abuse Email pattern encountered");
+			  
 			  len=node.getOrgAbuse().size();
 			  orgAbuse=node.getOrgAbuse().get(len-1);
 			  orgAbuse.setOrgAbuseEmail(aValue);
 			  break;
 		  case WHOIS_ORGABUSEREF_PATTERN:
+			  if(logger.isDebugEnabled())
+				  logger.debug("Org Abuse Reference pattern encountered");
+			  
 			  len=node.getOrgAbuse().size();
 			  orgAbuse=node.getOrgAbuse().get(len-1);
 			  orgAbuse.setOrgAbuseRef(aValue);
@@ -232,6 +323,9 @@ static{
 		default:
 			break;
 	    	}
+		if(logger.isDebugEnabled())
+			  logger.debug("Returning node after setting pattern:"+ pattern.toString());
+		
 		}
 		return node;
 	}
