@@ -22,20 +22,27 @@ import org.slf4j.LoggerFactory;
 
 public class IpWhoisDAOImpl implements IpWhoisDAO{
 
-	final static Logger logger = LoggerFactory.getLogger(IpWhoisDAOImpl.class);
+	private final static Logger logger = LoggerFactory.getLogger(IpWhoisDAOImpl.class);
 	private static WhoIsConfiguration whoisConfig;
 	private static IpWhoisDAO IPWhoIsDAO;
 
 	private IpWhoisDAOImpl(){
 	}
 
-	public Connection connectDataBase() throws Exception {
-
+	private Connection connectDataBase() throws Exception {
+logger.debug("Fetching connection from connection manager");
 		return ConnectionManager.getConnectionManager(whoisConfig).getConnection();
 
 	}
-
+	
+/**
+ * Getting singleton instance for IpWhoisDAO implementation
+ * 
+ * @param conf
+ * @return
+ */
 	public static IpWhoisDAO getInstance(WhoIsConfiguration conf){
+		logger.debug("Singleton instance of type IpWhoisDAO");
 		if(IPWhoIsDAO==null){
 			synchronized(IpWhoisDAOImpl.class){
 				if(IPWhoIsDAO==null){
@@ -47,6 +54,13 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 		return IPWhoIsDAO;
 	}
 
+	/**
+	 * Finding whois information by IP address flagged by currentData state
+	 * 
+	 * @param IPAddress, current state
+	 * @return List of whois nodes
+	 */
+	
 	public List<WhoIsNode<Long>> findWhoisByIp(Long ipAddress, boolean isCurrentData) throws SQLException {
 		List<WhoIsNode<Long>> whoisNodeList = null;
 		Connection connection = null;
@@ -59,19 +73,24 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 			preparedStatement.setLong(2, ipAddress);
 
 			ResultSet resultSet = preparedStatement.executeQuery();						
-			whoisNodeList = returnResultSet(resultSet,connection);
+			whoisNodeList = returnResultSet(resultSet,connection,isCurrentData);
 		}
 		catch (Exception e) {
 			logger.error("Exception occured while trying to find whois by IP:",e);
 		}
 		finally{
+			if(connection!=null)
 			ConnectionManager.getConnectionManager(whoisConfig).closeConnection(connection);
 		}
 
 		return whoisNodeList;
 	}
 
-	private List<WhoIsNode<Long>> returnResultSet(ResultSet resultSet,Connection connection) throws SQLException {
+	/*
+	 * Creates List of WhoIsNode out of resultSet passed as parameter. 
+	 * 
+	 */
+	private List<WhoIsNode<Long>> returnResultSet(ResultSet resultSet,Connection connection,boolean isCurrentData) throws SQLException {
 		List<WhoIsNode<Long>> whoisNodeList = new ArrayList<WhoIsNode<Long>>();
 		WhoIsNode<Long> whoisNode = null;
 
@@ -83,8 +102,8 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 			Long startAddress = whoisNode.getLow();
 			Long endAddress = whoisNode.getHigh();			
 
-			List<OrganisationAbuse> abuseContactList = getAbuseContactDetails(connection,startAddress,endAddress);			
-			List<OrganisationTech> techContactList = getTechContactDetails(connection,startAddress,endAddress);
+			List<OrganisationAbuse> abuseContactList = getAbuseContactDetails(connection,startAddress,endAddress,isCurrentData);			
+			List<OrganisationTech> techContactList = getTechContactDetails(connection,startAddress,endAddress,isCurrentData);
 
 			whoisNode.setOrgAbuse(abuseContactList);
 			whoisNode.setOrgTech(techContactList);
@@ -95,47 +114,71 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 		return whoisNodeList;
 	}
 
-
+/**
+ * find whois information by city. 
+ * 
+ * @return List of WhoIs nodes.
+ */
 	public List<WhoIsNode<Long>> findWhoisByCity(String city) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	
+	/**
+	 * find whois information by country. 
+	 * 
+	 * @return List of WhoIs nodes.
+	 */
 	public List<WhoIsNode<Long>> findWhoisByCountry(String country) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
-
-	private List<OrganisationTech> getTechContactDetails(Connection connection,Long startAddress, Long endAddress)
+/*
+ * Tech contact details for given start and end address flagged by current data state.
+ * 
+ */
+	private List<OrganisationTech> getTechContactDetails(Connection connection,Long startAddress, Long endAddress,boolean isCurrentData)
 			throws SQLException {	
 		logger.debug("Fetching TECHCONTACT Master table data");
-		String selectTechContacts = "select * from TECHCONTACT tc where tc.ip_start_address = ? and tc.ip_end_address = ?";
+		String selectTechContacts = "select * from TECHCONTACT tc where tc.is_current_data = ? and tc.ip_start_address = ? and tc.ip_end_address = ?";
 		PreparedStatement preparedStatement = connection.prepareStatement(selectTechContacts);
-		preparedStatement.setLong(1, startAddress);
-		preparedStatement.setLong(2, endAddress);
+		preparedStatement.setBoolean(1, isCurrentData);
+		preparedStatement.setLong(2, startAddress);
+		preparedStatement.setLong(3, endAddress);
 
 		ResultSet resultSet = preparedStatement.executeQuery();
 		return WhoisNodeBuilder.setTechContactListValues(resultSet);	 
 	}
 
+/*
+ * Abuse contact details for given start and end address flagged by current state.
+ * 
+ */
 
-
-	private List<OrganisationAbuse> getAbuseContactDetails(Connection connection,Long startAddress,Long endAddress)
+	private List<OrganisationAbuse> getAbuseContactDetails(Connection connection,Long startAddress,Long endAddress,boolean isCurrentData)
 			throws SQLException {
 
 		logger.debug("Fetching ABUSECONTACT Master table data");
 
-		String selectAbuseContacts = "select * from ABUSECONTACT ac where ac.ip_start_address = ? and ac.ip_end_address = ? ";
+		String selectAbuseContacts = "select * from ABUSECONTACT ac where ac.is_current_data = ? and ac.ip_start_address = ? and ac.ip_end_address = ? ";
 		PreparedStatement preparedStatement = connection.prepareStatement(selectAbuseContacts);
-		preparedStatement.setLong(1, startAddress);
-		preparedStatement.setLong(2, endAddress);
+		preparedStatement.setBoolean(1, isCurrentData);
+		preparedStatement.setLong(2, startAddress);
+		preparedStatement.setLong(3, endAddress);
 
 		ResultSet resultSet = preparedStatement.executeQuery();
 		return WhoisNodeBuilder.setAbuseContactListValues(resultSet);
 	}
 
+	/**
+	 * find whois information for all IP ranges with current state.
+	 * 
+	 * @param 
+	 * @return List of WhoIsNode
+	 */
 	public List<WhoIsNode<Long>> findAllWhoisByIpData() throws Exception{
 
 		List<WhoIsNode<Long>> whoIsNodeList = new ArrayList<WhoIsNode<Long>>();
@@ -147,14 +190,22 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 			Statement statement = connection.createStatement();
 
 			ResultSet resultSet = statement.executeQuery(selectQuery);						
-			whoIsNodeList = returnResultSet(resultSet,connection);
+			whoIsNodeList = returnResultSet(resultSet,connection,true);//need to pass current state
 		}
 		finally{
+			
+			if(connection!=null)
 			ConnectionManager.getConnectionManager(whoisConfig).closeConnection(connection);
 		}
 		return whoIsNodeList;
 	}
 
+	/**
+	 * Updates WhoIs current state flag for existing node to false. 
+	 * 
+	 * @param  whoIsNode
+	 * @return 
+	 */
 	public void updateWhoisByIpToHistoric(WhoIsNode<Long> whoisNode) throws Exception {
 		Connection connection = null;
 		logger.debug("Updating IPWHOIS Master table data by Ipaddress");
@@ -184,9 +235,17 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 			preparedStatement.executeUpdate();
 		}
 		finally{
+			if(connection!=null)
 			ConnectionManager.getConnectionManager(whoisConfig).closeConnection(connection);
 		}
 	}	
+	
+	/**
+	 * Inserts whois node information to respective DB tables with current state as true.
+	 * 
+	 * @param whoisNode
+	 * @return
+	 */
 
 	public void insertWhoisByIp(WhoIsNode<Long> whoisNode) throws Exception{
 
@@ -214,6 +273,7 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 			}
 		}
 		finally{
+			if(connection!=null)
 			ConnectionManager.getConnectionManager(whoisConfig).closeConnection(connection);
 		}
 

@@ -9,13 +9,11 @@ import java.io.InputStreamReader;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.transform.Result;
 
 import org.e8.whois.cache.WhoisCacheTree;
 import org.e8.whois.configuration.WhoIsConfiguration;
 import org.e8.whois.dao.DAOFactory;
 import org.e8.whois.dao.IpWhoisDAO;
-import org.e8.whois.dao.impl.IpWhoisDAOImpl;
 import org.e8.whois.model.Organisation;
 import org.e8.whois.model.OrganisationAbuse;
 import org.e8.whois.model.OrganisationTech;
@@ -40,37 +38,43 @@ public class ResourceCacheDB {
 		}
 		final WhoIsNode<Long> responseNode=WhoIsParser.parseWhoIsResponse(ipAddress);
 
-		// To start thread for persisting into DB
-		new Thread(new Runnable(){
+		if(responseNode!=null){
+			// To start thread for persisting into DB
+			new Thread(new Runnable(){
 
-			public void run() {
-				// TODO Auto-generated method stub
-			try {
-				persistToDB(responseNode,conf);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-				 
-			}
-			
-		}).start();
-		
-		//To start thread for building cache
-		new Thread(new Runnable(){
+				public void run() {
+					// TODO Auto-generated method stub
+					try {
+						persistToDB(responseNode,conf);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 
-			public void run() {
-				// TODO Auto-generated method stub
-				buildCache(responseNode,cache);
-			}
-			
-		}).start();
-		
-		
-		//return responseNode;
+				}
+
+			}).start();
+
+			//To start thread for building cache
+			new Thread(new Runnable(){
+
+				public void run() {
+					// TODO Auto-generated method stub
+					buildCache(responseNode,cache);
+				}
+
+			}).start();
+
+
+			//return responseNode;
 		
 		return buildResponse(responseNode);
-		
+		}
+		//else
+		//{
+			//return "Invalid IP Address";
+		//}
+		return null;
 	}
 	
 	/**

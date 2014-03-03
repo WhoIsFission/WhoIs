@@ -3,6 +3,7 @@ package org.e8.whois.parser;
 import java.io.IOException;
 
 import org.e8.whois.client.WhoIsClient;
+import org.e8.whois.client.WhoIsClientCommand;
 import org.e8.whois.model.WhoIsNode;
 
 public class WhoIsParser {
@@ -15,6 +16,12 @@ public class WhoIsParser {
 		if(parser!=null){
 		responseNode=parser.parse(response);
 		responseNode.setRawResponse(response);
+		responseNode.setIsCurrentData(true);
+		for(int i=0;i<responseNode.getOrgAbuse().size();i++)
+			responseNode.getOrgAbuse().get(i).setCurrentdata(true);
+		
+		for(int i=0;i<responseNode.getOrgTech().size();i++)
+			responseNode.getOrgTech().get(i).setCurrentdata(true);
 		}
 		return responseNode;
 	}

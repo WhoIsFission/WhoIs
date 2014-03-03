@@ -21,7 +21,6 @@ public class WhoIsClient {
 		String response=callCommandRestClient(IANA, aIpAddress);
 		Pattern pattern=Pattern.compile(PATTERN);
 		Matcher matcher=pattern.matcher(response);
-		System.out.println(response);
 		String whoisServer=null;
 		if(matcher.find()){
 			whoisServer=matcher.group(1).trim();

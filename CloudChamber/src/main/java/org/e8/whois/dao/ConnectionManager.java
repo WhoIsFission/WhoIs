@@ -7,9 +7,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.e8.whois.configuration.WhoIsConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConnectionManager {
 
+	private final static Logger logger=LoggerFactory.getLogger(ConnectionManager.class);
 	private  static ConnectionManager CONNECTION_MANAGER;
 	private static WhoIsConfiguration conf;
 	private static int MAX_CONNECTION;
@@ -18,7 +21,15 @@ public class ConnectionManager {
 	private ConnectionManager(){
 
 	}
+	
+	/**
+	 * Getting ConnectionManager instance out of the given configuration and initializing connection queue.
+	 * 
+	 * @param conf
+	 * @return ConnectionManager
+	 */
 	public static ConnectionManager getConnectionManager(WhoIsConfiguration conf){
+		logger.debug("Getting connection manager instance and initializing Connection queue");
 		if(CONNECTION_MANAGER==null){
 			synchronized(ConnectionManager.class){
 				if(CONNECTION_MANAGER==null){
@@ -36,8 +47,12 @@ public class ConnectionManager {
 		return CONNECTION_MANAGER;
 	}
 
+	/*
+	 * initialize Connection manager queue
+	 * 
+	 */
 	private void init() throws ClassNotFoundException, SQLException, InterruptedException{
-
+		logger.debug("Fetching DB connection objects and stores them in Connection queue.");
 		Class.forName(conf.getDatabase().getDriverClass());	
 		for(int i=0;i<MAX_CONNECTION;i++){
 			Connection connection=DriverManager.getConnection(conf.getDatabase().getUrl(), conf.getDatabase().getUser(),
@@ -47,8 +62,13 @@ public class ConnectionManager {
 		}
 	}
 
-
+/**
+ * Fetching Connection object from Connection queue.
+ * 
+ * @return Connection
+ */
 	public Connection getConnection(){
+		logger.debug("Retrieving connection object from connection queue.");
 		try{
 			return CONNECTION_QUEUE.take();
 		} catch (InterruptedException e) {
@@ -56,9 +76,14 @@ public class ConnectionManager {
 		}
 	}
 
+	/**
+	 * Closing connection : Putting connection object back into the queue.
+	 * 
+	 * @param Connection
+	 */
 
 	public void closeConnection(Connection conn){
-
+		logger.debug("Putting connection object back into queue.");
 		boolean flag=true;
 		synchronized (CONNECTION_MANAGER) {
 			if(CONNECTION_QUEUE.size()>=MAX_CONNECTION){
