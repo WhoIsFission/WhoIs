@@ -20,43 +20,43 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 	private String startAddress;
 	@XmlElement(name="endAddress")
 	private String EndAddress;
-	
-@XmlElement(name="asn")
+
+	@XmlElement(name="asn")
 	private String originAS;
-@XmlElement(name="netName")
+	@XmlElement(name="netName")
 	private String netName;
-@XmlElement(name="netHandle")
+	@XmlElement(name="netHandle")
 	private String netHandle;
-@XmlElement(name="parent")
+	@XmlElement(name="parent")
 	private String parent;
-@XmlElement(name="netType")
+	@XmlElement(name="netType")
 	private String netType;
-@XmlElement(name="description")
+	@XmlElement(name="description")
 	private String description;
-@XmlElement(name="dataSource")
+	@XmlElement(name="dataSource")
 	private String dataSource;
-@XmlElement(name="registrationDate")
+	@XmlElement(name="registrationDate")
 	private Date regDate;
-@XmlElement(name="updatedDate")
+	@XmlElement(name="updatedDate")
 	private Date updatedDate;
-@XmlElement(name="reference")
+	@XmlElement(name="reference")
 	private String ref;
 	private boolean isCurrentData =true;//1 implies current data 0 - historic data// whynot boolean
 	private String rawResponse;
-	
+
 	public String getRawResponse() {
 		return rawResponse;
 	}
 
 	public void setRawResponse(String rawResponse) {
 		this.rawResponse = rawResponse;
-	}
+	}	
 
-	public boolean getIsCurrentData() {
+	public boolean isCurrentData() {
 		return isCurrentData;
 	}
 
-	public void setIsCurrentData(boolean isCurrentData) {
+	public void setCurrentData(boolean isCurrentData) {
 		this.isCurrentData = isCurrentData;
 	}
 
@@ -83,10 +83,10 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-	
+
 	public T low;
-    public T high;
-    public void setLow(T low) {
+	public T high;
+	public void setLow(T low) {
 		this.low = low;
 	}
 
@@ -95,14 +95,26 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 		this.max=high;
 		this.height=1;
 	}
-@XmlAnyElement(lax=true)
+	@XmlAnyElement(lax=true)
 	private Organisation org;
-@XmlAnyElement(lax=true)
-private List<OrganisationAbuse> orgAbuse;
-@XmlAnyElement(lax=true)
-    private List<OrganisationTech> orgTech;
-    
-    public Organisation getOrg() {
+	@XmlAnyElement(lax=true)
+	private List<OrganisationAbuse> orgAbuse;
+	@XmlAnyElement(lax=true)
+	private List<OrganisationTech> orgTech;
+	@XmlAnyElement(lax=true)
+	private List<OrganisationAdmin> orgAdmin;
+	
+	
+
+	public List<OrganisationAdmin> getOrgAdmin() {
+		return orgAdmin;
+	}
+
+	public void setOrgAdmin(List<OrganisationAdmin> orgAdmin) {
+		this.orgAdmin = orgAdmin;
+	}
+
+	public Organisation getOrg() {
 		return org;
 	}
 
@@ -127,45 +139,45 @@ private List<OrganisationAbuse> orgAbuse;
 	}
 
 	public T getLow(){
-    	return this.low;
-}
+		return this.low;
+	}
 
-    public T getHigh(){
-    	return this.high;
-}
-    
+	public T getHigh(){
+		return this.high;
+	}
+
 	public WhoIsNode<T> left;
-    public WhoIsNode<T> right;
-    public T max;
-    public int height;
-    public WhoIsNode(){
-    this.left=null;//changes
-    this.right=null;//changes
-    }
-    public WhoIsNode(T l, T h){
-        this.low=l;
-        this.high=h;
-        this.max=high;
-        this.height=1;
-    }
-    
-    public int compareTo(WhoIsNode<T> nod){
-    Comparable cLow=(Comparable) low;
-    Comparable cHigh=(Comparable) high;
-    Comparable nLow=(Comparable) nod.low;
-    Comparable nHigh=(Comparable) nod.high; 
-    if((cLow.compareTo(nLow)<0&&nHigh.compareTo(cHigh)<0)||(cLow.compareTo(nHigh))>0){
-    		return 1;
-    }
-    
-    if((cLow.compareTo(nLow)>0&&nHigh.compareTo(cHigh)>0)||(nLow.compareTo(cHigh))>0){
-    		return -1;
-    }
-    
-    return 0;
-}
+	public WhoIsNode<T> right;
+	public T max;
+	public int height;
+	public WhoIsNode(){
+		this.left=null;//changes
+		this.right=null;//changes
+	}
+	public WhoIsNode(T l, T h){
+		this.low=l;
+		this.high=h;
+		this.max=high;
+		this.height=1;
+	}
 
-	
+	public int compareTo(WhoIsNode<T> nod){
+		Comparable cLow=(Comparable) low;
+		Comparable cHigh=(Comparable) high;
+		Comparable nLow=(Comparable) nod.low;
+		Comparable nHigh=(Comparable) nod.high; 
+		if((cLow.compareTo(nLow)<0&&nHigh.compareTo(cHigh)<0)||(cLow.compareTo(nHigh))>0){
+			return 1;
+		}
+
+		if((cLow.compareTo(nLow)>0&&nHigh.compareTo(cHigh)>0)||(nLow.compareTo(cHigh))>0){
+			return -1;
+		}
+
+		return 0;
+	}
+
+
 	public String getOriginAS() {
 		return originAS;
 	}
@@ -228,7 +240,7 @@ private List<OrganisationAbuse> orgAbuse;
 	public void setEndAddress(String endAddress) {
 		EndAddress = endAddress;
 	}
-	
-	
+
+
 
 }

@@ -28,8 +28,16 @@ public class OrganisationTech {
 	@XmlElement(name="techAddress")
 	private String orgTechAdrress;
 	private boolean isCurrentdata=true;
+	private String contactType;
 
-	
+
+	public String getContactType() {
+		return contactType;
+	}	
+	public void setContactType(String contactType) {
+		this.contactType = contactType;
+	}
+
 	public boolean isCurrentdata() {
 		return isCurrentdata;
 	}
@@ -78,6 +86,6 @@ public class OrganisationTech {
 	public void setOrgTechFax(String orgTechFax) {
 		this.orgTechFax = orgTechFax;
 	}
-		
-	
+
+
 }

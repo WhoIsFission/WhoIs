@@ -22,10 +22,20 @@ public class OrganisationAbuse {
 	private String orgAbuseEmail;
 	@XmlElement(name="abuseReference")
 	private String orgAbuseRef;
+	@XmlElement(name="abuseFax")
+	private String orgAbuseFax;
 	@XmlElement(name="abuseAddress")
 	private String orgAbuseAddress;
 	private boolean isCurrentdata=true;
-
+	private String contactType;
+	
+	
+	public String getContactType() {
+		return contactType;
+	}	
+	public void setContactType(String contactType) {
+		this.contactType = contactType;
+	}
 	
 	public boolean isCurrentdata() {
 		return isCurrentdata;
@@ -69,7 +79,10 @@ public class OrganisationAbuse {
 	public void setOrgAbuseRef(String orgAbuseRef) {
 		this.orgAbuseRef = orgAbuseRef;
 	}
-		
-	
-	
+	public String getOrgAbuseFax() {
+		return orgAbuseFax;
+	}
+	public void setOrgAbuseFax(String orgAbuseFax) {
+		this.orgAbuseFax = orgAbuseFax;
+	}	
 }
