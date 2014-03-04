@@ -3,22 +3,21 @@ package org.e8.whois.dao.builder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.e8.whois.model.Organisation;
 import org.e8.whois.model.OrganisationAbuse;
+import org.e8.whois.model.OrganisationAdmin;
 import org.e8.whois.model.OrganisationTech;
 import org.e8.whois.model.WhoIsNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /***
- * WhoisNodeBuilder is used to build elements contained in whoIsNode
+ * WhoisNodeBuilder is used to build elements of whoisNode
  * 
- * @author Abhijit
- *
  */
 public class WhoisNodeBuilder {
 	private final static Logger logger = LoggerFactory.getLogger(WhoisNodeBuilder.class);
@@ -33,43 +32,43 @@ public class WhoisNodeBuilder {
 	public static WhoIsNode<Long> setWhoIsNodeValues(ResultSet resultSet) throws SQLException {
 		if(logger.isDebugEnabled())
 			logger.debug("Setting whoIs node values");
-		
+
 		WhoIsNode<Long> whoisNode = new WhoIsNode<Long>();
 
-		whoisNode.setLow(resultSet.getLong(1));
+		whoisNode.setLow(resultSet.getLong(WhoisConstants.IP_START_ADDRESS_COLUMNNAME));
 
-		whoisNode.setHigh(resultSet.getLong(2));
+		whoisNode.setHigh(resultSet.getLong(WhoisConstants.IP_END_ADDRESS_COLUMNNAME));
 
-		whoisNode.setOriginAS(resultSet.getString(3));
+		whoisNode.setOriginAS(resultSet.getString(WhoisConstants.ORIGIN_AS_COLUMNNAME));
 
-		whoisNode.setNetName(resultSet.getString(4));
+		whoisNode.setNetName(resultSet.getString(WhoisConstants.NET_NAME_COLUMNNAME));
 
-		whoisNode.setNetHandle(resultSet.getString(5));
+		whoisNode.setNetHandle(resultSet.getString(WhoisConstants.NET_HANDLE_COLUMNNAME));
 
-		whoisNode.setParent(resultSet.getString(6));		
+		whoisNode.setParent(resultSet.getString(WhoisConstants.PARENT_COLUMNNAME));		
 
-		whoisNode.setNetType(resultSet.getString(7));
+		whoisNode.setNetType(resultSet.getString(WhoisConstants.NET_TYPE_COLUMNNAME));
 
-		whoisNode.setRef(resultSet.getString(8));
+		whoisNode.setRef(resultSet.getString(WhoisConstants.NET_REF_COLUMNNAME));
 
-		whoisNode.setDataSource(resultSet.getString(9));
+		whoisNode.setDataSource(resultSet.getString(WhoisConstants.DATA_SOURCE_COLUMNNAME));
 
-		whoisNode.setDescription(resultSet.getString(10));
+		whoisNode.setDescription(resultSet.getString(WhoisConstants.DESCRIPTION_COLUMNNAME));
 
-		java.sql.Date regDate = resultSet.getDate(11);
+		java.sql.Date regDate = resultSet.getDate(WhoisConstants.REG_DATE_COLUMNNAME);
 		if(regDate !=null){
 			Date registereddate = new Date(regDate.getTime());
 			whoisNode.setRegDate(registereddate);
 		}
 
-		java.sql.Date updatedDate = resultSet.getDate(12);
+		java.sql.Date updatedDate = resultSet.getDate(WhoisConstants.UPDATED_DATE_COLUMNNAME);
 		if(updatedDate !=null){
 			Date updateddate = new Date(updatedDate.getTime());
 			whoisNode.setUpdatedDate(updateddate);
 		}
 
-		whoisNode.setCurrentData(resultSet.getBoolean(24));
-		whoisNode.setRawResponse(resultSet.getString(26));
+		whoisNode.setCurrentData(resultSet.getBoolean(WhoisConstants.IS_CURRENT_DATA_COLUMNNAME));
+		whoisNode.setRawResponse(resultSet.getString(WhoisConstants.RAW_RESPONSE_COLUMNNAME));
 		return whoisNode;
 	}
 
@@ -80,100 +79,158 @@ public class WhoisNodeBuilder {
 	 * @return Organisation
 	 * @throws SQLException
 	 */
-	
+
 	public static Organisation setOrganisationValues(ResultSet resultSet) throws SQLException {
 		if(logger.isDebugEnabled())
-		logger.debug("Setting Organisation values");
-		
+			logger.debug("Setting Organisation values");
+
 		Organisation org = new Organisation();
 
-		org.setOrgName(resultSet.getString(13));
+		org.setOrgName(resultSet.getString(WhoisConstants.ORG_NAME_COLUMNNAME));
 
-		org.setOrgId(resultSet.getString(14));
+		org.setOrgId(resultSet.getString(WhoisConstants.ORG_ID_COLUMNNAME));
 
-		org.setPhoneNo(resultSet.getString(15));	
+		org.setPhoneNo(resultSet.getString(WhoisConstants.ORG_PHONE_COLUMNNAME));	
 
-		org.setFaxNo(resultSet.getString(16));
+		org.setFaxNo(resultSet.getString(WhoisConstants.ORG_FAX_COLUMNNAME));
 
-		org.setCity(resultSet.getString(17));		
+		org.setCity(resultSet.getString(WhoisConstants.CITY_COLUMNNAME));		
 
-		org.setState(resultSet.getString(18));
+		org.setState(resultSet.getString(WhoisConstants.STATE_COLUMNNAME));
 
-		org.setCountry(resultSet.getString(19));
+		org.setCountry(resultSet.getString(WhoisConstants.COUNTRY_COLUMNNAME));
 
-		org.setPostalCode(resultSet.getString(20));
+		org.setPostalCode(resultSet.getString(WhoisConstants.POSTAL_CODE_COLUMNNAME));
 
-		java.sql.Date orgRegDate =resultSet.getDate(21);
+		java.sql.Date orgRegDate =resultSet.getDate(WhoisConstants.ORG_REG_DATE_COLUMNNAME);
 		if(orgRegDate !=null){
 			Date orgRegisteredDate = new Date(orgRegDate.getTime());
 			org.setRegDate(orgRegisteredDate);
 		}
 
-		Date orgUpdatedDate = resultSet.getDate(22);
+		Date orgUpdatedDate = resultSet.getDate(WhoisConstants.ORG_UPDATED_DATE_COLUMNNAME);
 		if(orgUpdatedDate !=null){
 			Date orgUpdDate = new Date(orgUpdatedDate.getTime());
 			org.setUpdatedDate(orgUpdDate);
 		}
 
-		org.setRef(resultSet.getString(23));
+		org.setRef(resultSet.getString(WhoisConstants.ORG_REF_COLUMNNAME));
 
 		return org;
 	}
 
+
+
 	/**
-	 * Set technical contact list for whoIsnode from the result set passed.
+	 * Set abuse object values
 	 * 
 	 * @param resultSet
-	 * @return List of OrganisationTech
+	 * @return Organisation Abuse
 	 * @throws SQLException
 	 */
-	
-	public static List<OrganisationTech> setTechContactListValues(ResultSet resultSet) throws SQLException {
+	public static OrganisationAbuse setAbuseContactListValues(ResultSet resultSet) throws SQLException {
 		if(logger.isDebugEnabled())
-		logger.debug("Setting technical contacts.");
-		
-		List<OrganisationTech> techContactList = new ArrayList<OrganisationTech>();
-		while(resultSet!=null&&resultSet.next()){
-			OrganisationTech orgTech = new OrganisationTech();
+			logger.debug("Setting abuse object values");
 
-			orgTech.setOrgTechHandle(resultSet.getString(3));
-			orgTech.setOrgTechName(resultSet.getString(4));
-			orgTech.setOrgTechAdrress(resultSet.getString(5));
-			orgTech.setOrgTechPhone(resultSet.getString(6));
-			orgTech.setOrgTechEmail(resultSet.getString(7));
-			orgTech.setOrgTechFax(resultSet.getString(8));
-			orgTech.setOrgTechRef(resultSet.getString(9));
+		OrganisationAbuse orgAbuse = new OrganisationAbuse();
 
-			techContactList.add(orgTech);
-		}
-		return techContactList;
+		orgAbuse.setOrgAbuseHandle(resultSet.getString(WhoisConstants.HANDLE_COLUMNNAME));
+		orgAbuse.setOrgAbuseName(resultSet.getString(WhoisConstants.NAME_COLUMNNAME));
+		orgAbuse.setOrgAbuseAddress(resultSet.getString(WhoisConstants.ADDRESS_COLUMNNAME));
+		orgAbuse.setOrgAbusePhone(resultSet.getString(WhoisConstants.PHONE_COLUMNNAME));
+		orgAbuse.setOrgAbuseEmail(resultSet.getString(WhoisConstants.EMAIL_COLUMNNAME));
+		orgAbuse.setOrgAbuseFax(resultSet.getString(WhoisConstants.FAX_COLUMNNAME));
+		orgAbuse.setOrgAbuseRef(resultSet.getString(WhoisConstants.REF_COLUMNNAME));
+		orgAbuse.setContactType(resultSet.getString(WhoisConstants.CONTACT_TYPE_COLUMNNAME));
+		return orgAbuse;
+	}
+	
+	/**
+	 * Set tech object values
+	 * 
+	 * @param resultSet
+	 * @return Organisation Tech
+	 * @throws SQLException
+	 */
+	public static OrganisationTech setTechContactListValues(ResultSet resultSet) throws SQLException {
+		if(logger.isDebugEnabled())
+			logger.debug("Setting tech object values");
+
+		OrganisationTech orgTech = new OrganisationTech();
+
+		orgTech.setOrgTechHandle(resultSet.getString(WhoisConstants.HANDLE_COLUMNNAME));
+		orgTech.setOrgTechName(resultSet.getString(WhoisConstants.NAME_COLUMNNAME));
+		orgTech.setOrgTechAdrress(resultSet.getString(WhoisConstants.ADDRESS_COLUMNNAME));
+		orgTech.setOrgTechPhone(resultSet.getString(WhoisConstants.PHONE_COLUMNNAME));
+		orgTech.setOrgTechEmail(resultSet.getString(WhoisConstants.EMAIL_COLUMNNAME));
+		orgTech.setOrgTechFax(resultSet.getString(WhoisConstants.FAX_COLUMNNAME));
+		orgTech.setOrgTechRef(resultSet.getString(WhoisConstants.REF_COLUMNNAME));
+		orgTech.setContactType(resultSet.getString(WhoisConstants.CONTACT_TYPE_COLUMNNAME));
+		return orgTech;
+	}
+	
+	/**
+	 * Set admin object values
+	 * 
+	 * @param resultSet
+	 * @return Organisation Admin
+	 * @throws SQLException
+	 */
+	public static OrganisationAdmin setAdminContactListValues(ResultSet resultSet) throws SQLException {
+		if(logger.isDebugEnabled())
+			logger.debug("Setting admin object values");
+
+		OrganisationAdmin orgAdmin = new OrganisationAdmin();
+
+		orgAdmin.setOrgAdminHandle(resultSet.getString(WhoisConstants.HANDLE_COLUMNNAME));
+		orgAdmin.setOrgAdminName(resultSet.getString(WhoisConstants.NAME_COLUMNNAME));
+		orgAdmin.setOrgAdminAddress(resultSet.getString(WhoisConstants.ADDRESS_COLUMNNAME));
+		orgAdmin.setOrgAdminPhone(resultSet.getString(WhoisConstants.PHONE_COLUMNNAME));
+		orgAdmin.setOrgAdminEmail(resultSet.getString(WhoisConstants.EMAIL_COLUMNNAME));
+		orgAdmin.setOrgAdminFax(resultSet.getString(WhoisConstants.FAX_COLUMNNAME));
+		orgAdmin.setOrgAdminRef(resultSet.getString(WhoisConstants.REF_COLUMNNAME));
+		orgAdmin.setContactType(resultSet.getString(WhoisConstants.CONTACT_TYPE_COLUMNNAME));
+		return orgAdmin;
 	}
 
 	/**
-	 * Set abuse contact list
+	 * Set contact list for all contact types
 	 * 
 	 * @param resultSet
-	 * @return List of Organisation Abuse
+	 * @param whoisNode
+	 * @return WhoIsNode with all contacts
 	 * @throws SQLException
 	 */
-	public static List<OrganisationAbuse> setAbuseContactListValues(ResultSet resultSet) throws SQLException {
+	public static WhoIsNode<Long> setContactListValues(ResultSet resultSet,WhoIsNode<Long> whoisNode) throws SQLException {
 		if(logger.isDebugEnabled())
-		logger.debug("Setting abuse contacts list");
-		
-		List<OrganisationAbuse> abuseContactList = new ArrayList<OrganisationAbuse>();
+			logger.debug("Setting abuse contacts list");
+
+		List<OrganisationAbuse> abuseContactList = Collections.emptyList();
+		List<OrganisationTech> techContactList = Collections.emptyList();
+		List<OrganisationAdmin> adminContactList = Collections.emptyList();
+
 		while(resultSet!=null&&resultSet.next()){
-			OrganisationAbuse orgAbuse = new OrganisationAbuse();
+			String contactType = resultSet.getString("contact_type");
+			if(contactType !=null && contactType.equalsIgnoreCase("ADMIN")){
+				OrganisationAdmin orgAdmin = setAdminContactListValues(resultSet);
+				adminContactList.add(orgAdmin);
+			}
 
-			orgAbuse.setOrgAbuseHandle(resultSet.getString(3));
-			orgAbuse.setOrgAbuseName(resultSet.getString(4));
-			orgAbuse.setOrgAbuseAddress(resultSet.getString(5));
-			orgAbuse.setOrgAbusePhone(resultSet.getString(6));
-			orgAbuse.setOrgAbuseEmail(resultSet.getString(7));
-			orgAbuse.setOrgAbuseRef(resultSet.getString(8));
+			if(contactType !=null && contactType.equalsIgnoreCase("TECH")){
+				OrganisationTech orgTech = setTechContactListValues(resultSet);
+				techContactList.add(orgTech);
+			}			
 
-			abuseContactList.add(orgAbuse);
+			if(contactType !=null && contactType.equalsIgnoreCase("ABUSE")){
+				OrganisationAbuse orgAbuse = setAbuseContactListValues(resultSet);
+				abuseContactList.add(orgAbuse);
+			}
+
 		}
-		return abuseContactList;
+		whoisNode.setOrgAbuse(abuseContactList);
+		whoisNode.setOrgAdmin(adminContactList);
+		whoisNode.setOrgTech(techContactList);
+		return whoisNode;
 	}
 
 	/**
@@ -183,11 +240,11 @@ public class WhoisNodeBuilder {
 	 * @param preparedStatement
 	 * @throws SQLException
 	 */
-	
+
 	public static void insertWhoisToDbValues(WhoIsNode<Long> whoisNode,PreparedStatement preparedStatement) throws SQLException {
 		if(logger.isDebugEnabled())
-		logger.debug("Inserts whois node information to DB tables.");
-		
+			logger.debug("Inserts whois node information to DB tables.");
+
 		preparedStatement.setLong(1, whoisNode.getLow());
 		preparedStatement.setLong(2, whoisNode.getHigh());
 		preparedStatement.setString(3,whoisNode.getOriginAS());
@@ -265,29 +322,30 @@ public class WhoisNodeBuilder {
 	 * @param preparedStatement
 	 * @throws SQLException
 	 */
-	
+
 	public static void insertTechContactToDbValues(WhoIsNode<Long> whoisNode,PreparedStatement preparedStatement) throws SQLException {
 		if(logger.isDebugEnabled())
-		logger.debug("Inserts Technical contact information to DB tables.");
-		
+			logger.debug("Inserts Technical contact information to DB tables.");
+
 		List<OrganisationTech> techList = whoisNode.getOrgTech();		
 		for(OrganisationTech tech:techList){
 			preparedStatement.setLong(1, whoisNode.getLow());
 			preparedStatement.setLong(2, whoisNode.getHigh());
-			preparedStatement.setString(3,tech.getOrgTechHandle());
-			preparedStatement.setString(4,tech.getOrgTechName());
-			preparedStatement.setString(5, tech.getOrgTechAdrress());
-			preparedStatement.setString(6,tech.getOrgTechPhone());
-			preparedStatement.setString(7,tech.getOrgTechEmail());
-			preparedStatement.setString(8,tech.getOrgTechFax());
-			preparedStatement.setString(9,tech.getOrgTechRef());
-			preparedStatement.setBoolean(10,tech.isCurrentdata());
-			preparedStatement.setTimestamp(11,new java.sql.Timestamp(new Date().getTime()));
+			preparedStatement.setString(3, tech.getContactType());
+			preparedStatement.setString(4,tech.getOrgTechHandle());
+			preparedStatement.setString(5,tech.getOrgTechName());
+			preparedStatement.setString(6, tech.getOrgTechAdrress());
+			preparedStatement.setString(7,tech.getOrgTechPhone());
+			preparedStatement.setString(8,tech.getOrgTechEmail());
+			preparedStatement.setString(9,tech.getOrgTechFax());
+			preparedStatement.setString(10,tech.getOrgTechRef());
+			preparedStatement.setBoolean(11,tech.isCurrentdata());
+			preparedStatement.setTimestamp(12,new java.sql.Timestamp(new Date().getTime()));
 			preparedStatement.addBatch();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Inserts abuse contact information to DB.
 	 * 
@@ -298,20 +356,52 @@ public class WhoisNodeBuilder {
 
 	public static void insertAbuseContactToDbValues(WhoIsNode<Long> whoisNode,PreparedStatement preparedStatement) throws SQLException {
 		if(logger.isDebugEnabled())
-		logger.debug("Inserts Abuse contact information to DB tables.");
-		
+			logger.debug("Inserts Abuse contact information to DB tables.");
+
 		List<OrganisationAbuse> abuseList = whoisNode.getOrgAbuse();
 		for(OrganisationAbuse abuse:abuseList){
 			preparedStatement.setLong(1, whoisNode.getLow());
 			preparedStatement.setLong(2, whoisNode.getHigh());
-			preparedStatement.setString(3,abuse.getOrgAbuseHandle());
-			preparedStatement.setString(4,abuse.getOrgAbuseName());
-			preparedStatement.setString(5, abuse.getOrgAbuseAddress());
-			preparedStatement.setString(6,abuse.getOrgAbusePhone());
-			preparedStatement.setString(7,abuse.getOrgAbuseEmail());
-			preparedStatement.setString(8,abuse.getOrgAbuseRef());
-			preparedStatement.setBoolean(9,abuse.isCurrentdata());
-			preparedStatement.setTimestamp(10,new java.sql.Timestamp(new Date().getTime()));
+			preparedStatement.setString(3,abuse.getContactType());
+			preparedStatement.setString(4,abuse.getOrgAbuseHandle());
+			preparedStatement.setString(5,abuse.getOrgAbuseName());
+			preparedStatement.setString(6, abuse.getOrgAbuseAddress());
+			preparedStatement.setString(7,abuse.getOrgAbusePhone());
+			preparedStatement.setString(8,abuse.getOrgAbuseEmail());
+			preparedStatement.setString(9,abuse.getOrgAbuseFax());
+			preparedStatement.setString(10,abuse.getOrgAbuseRef());
+			preparedStatement.setBoolean(11,abuse.isCurrentdata());
+			preparedStatement.setTimestamp(12,new java.sql.Timestamp(new Date().getTime()));
+			preparedStatement.addBatch();
+		}
+	}
+	
+	/**
+	 * Inserts admin contact information to DB.
+	 * 
+	 * @param whoisNode
+	 * @param preparedStatement
+	 * @throws SQLException
+	 */
+
+	public static void insertAdminContactToDbValues(WhoIsNode<Long> whoisNode,PreparedStatement preparedStatement) throws SQLException {
+		if(logger.isDebugEnabled())
+			logger.debug("Inserts Admin contact information to DB tables.");
+
+		List<OrganisationAdmin> adminList = whoisNode.getOrgAdmin();
+		for(OrganisationAdmin admin:adminList){
+			preparedStatement.setLong(1, whoisNode.getLow());
+			preparedStatement.setLong(2, whoisNode.getHigh());
+			preparedStatement.setString(3,admin.getContactType());
+			preparedStatement.setString(4,admin.getOrgAdminHandle());
+			preparedStatement.setString(5,admin.getOrgAdminName());
+			preparedStatement.setString(6, admin.getOrgAdminAddress());
+			preparedStatement.setString(7,admin.getOrgAdminPhone());
+			preparedStatement.setString(8,admin.getOrgAdminEmail());
+			preparedStatement.setString(9,admin.getOrgAdminFax());
+			preparedStatement.setString(10,admin.getOrgAdminRef());
+			preparedStatement.setBoolean(11,admin.isCurrentdata());
+			preparedStatement.setTimestamp(12,new java.sql.Timestamp(new Date().getTime()));
 			preparedStatement.addBatch();
 		}
 	}

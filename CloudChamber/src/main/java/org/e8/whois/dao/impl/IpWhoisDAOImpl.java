@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -16,8 +15,6 @@ import org.e8.whois.dao.IpWhoisDAO;
 import org.e8.whois.dao.builder.WhoisNodeBuilder;
 import org.e8.whois.exceptionHandling.WhoIsException;
 import org.e8.whois.model.Organisation;
-import org.e8.whois.model.OrganisationAbuse;
-import org.e8.whois.model.OrganisationTech;
 import org.e8.whois.model.WhoIsNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +84,7 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 			logger.debug("Fetching IPWHOIS Master table data: findwhoisByIp:"+ipAddress);
 		if(connection!=null){
 			try{
-				String selectQuery = "select * from IPWHOIS ip where is_current_data = ? and ? between ip.ip_start_address and ip.ip_end_address";
+				String selectQuery = "select * from IP_WHOIS ip where is_current_data = ? and ? between ip.ip_start_address and ip.ip_end_address";
 				PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
 				preparedStatement.setBoolean(1, isCurrentData);
 				preparedStatement.setLong(2, ipAddress);
@@ -112,22 +109,17 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 	 * 
 	 */
 	private List<WhoIsNode<Long>> returnResultSet(ResultSet resultSet,Connection connection,boolean isCurrentData) throws SQLException {
-		List<WhoIsNode<Long>> whoisNodeList = new ArrayList<WhoIsNode<Long>>();
+		List<WhoIsNode<Long>> whoisNodeList = Collections.emptyList();
 		WhoIsNode<Long> whoisNode = null;
 
-		while (resultSet!=null&&resultSet.next()) {	     
+		while (resultSet!=null && resultSet.next()) {	     
 			whoisNode = WhoisNodeBuilder.setWhoIsNodeValues(resultSet);
 			Organisation org= WhoisNodeBuilder.setOrganisationValues(resultSet);
 			whoisNode.setOrg(org);
 
-			Long startAddress = whoisNode.getLow();
-			Long endAddress = whoisNode.getHigh();			
+			getContactDetails(connection,isCurrentData,whoisNode);
 
-			List<OrganisationAbuse> abuseContactList = getAbuseContactDetails(connection,startAddress,endAddress,isCurrentData);			
-			List<OrganisationTech> techContactList = getTechContactDetails(connection,startAddress,endAddress,isCurrentData);
-
-			whoisNode.setOrgAbuse(abuseContactList);
-			whoisNode.setOrgTech(techContactList);
+			logger.debug("Tech contactlist available? ", whoisNode.getOrgTech() !=null);
 
 			whoisNodeList.add(whoisNode);
 		}
@@ -158,42 +150,23 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 
 
 	/*
-	 * Tech contact details for given start and end address flagged by current data state.
-	 * 
-	 */
-	private List<OrganisationTech> getTechContactDetails(Connection connection,Long startAddress, Long endAddress,boolean isCurrentData)
-			throws SQLException {	
-		if(logger.isDebugEnabled())
-			logger.debug("Fetching TECHCONTACT Master table data");
-
-		String selectTechContacts = "select * from TECHCONTACT tc where tc.is_current_data = ? and tc.ip_start_address = ? and tc.ip_end_address = ?";
-		PreparedStatement preparedStatement = connection.prepareStatement(selectTechContacts);
-		preparedStatement.setBoolean(1, isCurrentData);
-		preparedStatement.setLong(2, startAddress);
-		preparedStatement.setLong(3, endAddress);
-
-		ResultSet resultSet = preparedStatement.executeQuery();
-		return WhoisNodeBuilder.setTechContactListValues(resultSet);	 
-	}
-
-	/*
-	 * Abuse contact details for given start and end address flagged by current state.
+	 * All contact details for given start and end address flagged by current state.
 	 * 
 	 */
 
-	private List<OrganisationAbuse> getAbuseContactDetails(Connection connection,Long startAddress,Long endAddress,boolean isCurrentData)
+	private WhoIsNode<Long> getContactDetails(Connection connection,boolean isCurrentData,WhoIsNode<Long> whoisNode)
 			throws SQLException {
 		if(logger.isDebugEnabled())
-			logger.debug("Fetching ABUSECONTACT Master table data");
+			logger.debug("Fetching CONTACT Master table data");
 
-		String selectAbuseContacts = "select * from ABUSECONTACT ac where ac.is_current_data = ? and ac.ip_start_address = ? and ac.ip_end_address = ? ";
-		PreparedStatement preparedStatement = connection.prepareStatement(selectAbuseContacts);
+		String selectContacts = "select * from IP_WHOIS_CONTACT ac where ac.is_current_data = ? and ac.ip_start_address = ? and ac.ip_end_address = ? ";
+		PreparedStatement preparedStatement = connection.prepareStatement(selectContacts);
 		preparedStatement.setBoolean(1, isCurrentData);
-		preparedStatement.setLong(2, startAddress);
-		preparedStatement.setLong(3, endAddress);
+		preparedStatement.setLong(2, whoisNode.getLow());
+		preparedStatement.setLong(3, whoisNode.getHigh());
 
 		ResultSet resultSet = preparedStatement.executeQuery();
-		return WhoisNodeBuilder.setAbuseContactListValues(resultSet);
+		return WhoisNodeBuilder.setContactListValues(resultSet,whoisNode);
 	}
 
 	/**
@@ -205,7 +178,7 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 	 */
 	public List<WhoIsNode<Long>> findAllWhoisByIpData() throws WhoIsException{
 
-		List<WhoIsNode<Long>> whoIsNodeList = new ArrayList<WhoIsNode<Long>>();
+		List<WhoIsNode<Long>> whoIsNodeList = Collections.emptyList();
 		Connection connection = null;
 		if(logger.isDebugEnabled())
 			logger.debug("Fetching IPWHOIS Master table data");
@@ -213,12 +186,13 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 		connection = connectDataBase();
 		if(connection!=null){
 			try{
-				String selectQuery = "select * from IPWHOIS ip where is_current_data = 1 ";
+				String selectQuery = "select * from IP_WHOIS ip where ip.is_current_data = 1 ";
 				Statement statement = connection.createStatement();
 
 				ResultSet resultSet = statement.executeQuery(selectQuery);						
-				whoIsNodeList = returnResultSet(resultSet,connection,true);//need to pass current state
-			}catch(SQLException e){
+				whoIsNodeList = returnResultSet(resultSet,connection,true);
+			}
+			catch(SQLException e){
 				if(logger.isErrorEnabled())
 					logger.error("Exception retreiving IPWHOIS records whose current flag is true.");
 				throw new WhoIsException("Exception retreiving IPWHOIS records whose current flag is true ",e);
@@ -242,34 +216,28 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 	public void updateWhoisByIpToHistoric(WhoIsNode<Long> whoisNode) throws WhoIsException {
 		Connection connection = null;
 		if(logger.isDebugEnabled())
-			logger.debug("Updating IPWHOIS Master table data by Ipaddress");
+			logger.debug("Updating IPWHOIS Master table data by Ipaddress- to change to Historic");
 		connection = connectDataBase();
 		if(connection!=null){
 			try{		
-				String updateQuery = "update IPWHOIS SET is_current_data = 0, LAST_UPDATED_TIME = ? WHERE ip_start_address = ?  AND ip_end_address = ?";
+				String updateQuery = "UPDATE IP_WHOIS SET is_current_data = 0, LAST_UPDATED_TIME = ? WHERE ip_start_address = ?  AND ip_end_address = ? AND is_current_data = 1";
 
 				PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
-
 				java.sql.Timestamp time = new java.sql.Timestamp(new Date().getTime());
 				preparedStatement.setTimestamp(1, time);
 				preparedStatement.setLong(2, whoisNode.getLow());
 				preparedStatement.setLong(3, whoisNode.getHigh());			
 				preparedStatement.executeUpdate();
 
-				String updateTechQuery = "UPDATE TECHCONTACT SET is_current_data = 0, LAST_UPDATED_TIME = ? WHERE ip_start_address = ?  AND ip_end_address = ?";
-				preparedStatement = connection.prepareStatement(updateTechQuery);			
+				String updateContactQuery = "UPDATE IP_WHOIS_CONTACT SET is_current_data = 0, LAST_UPDATED_TIME = ? WHERE ip_start_address = ?  AND ip_end_address = ? and is_current_data = 1";
+				
+				preparedStatement = connection.prepareStatement(updateContactQuery);			
 				preparedStatement.setTimestamp(1, time);
 				preparedStatement.setLong(2, whoisNode.getLow());
 				preparedStatement.setLong(3, whoisNode.getHigh());
 				preparedStatement.executeUpdate();
-
-				String updateAbuseQuery = "UPDATE ABUSECONTACT SET is_current_data = 0, LAST_UPDATED_TIME = ? WHERE ip_start_address = ?  AND ip_end_address = ?";
-				preparedStatement = connection.prepareStatement(updateAbuseQuery);
-				preparedStatement.setTimestamp(1, time);
-				preparedStatement.setLong(2, whoisNode.getLow());
-				preparedStatement.setLong(3, whoisNode.getHigh());
-				preparedStatement.executeUpdate();
-			}catch(SQLException e){
+			}
+			catch(SQLException e){
 				if(logger.isErrorEnabled())
 					logger.error("Exception updating historical flag for records already exist in DB Tables.");
 				throw new WhoIsException("Updating historical flag failed due to exception ",e);
@@ -294,30 +262,31 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 		Connection connection = null;
 
 		if(logger.isDebugEnabled())
-			logger.debug("Updating IPWHOIS Master table data by Ipaddress");
-
+			logger.debug("Updating IP_WHOIS Master table data by Ipaddress");
 
 		connection = connectDataBase();
 		if(connection!=null){
 			try{
-				String insertQuery = "INSERT INTO IPWHOIS VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				String insertQuery = "INSERT INTO IP_WHOIS VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
 				WhoisNodeBuilder.insertWhoisToDbValues(whoisNode, preparedStatement);
 				preparedStatement.executeUpdate();
 
-				if(whoisNode.getOrgTech() !=null && whoisNode.getOrgTech().size() > 0){
-					String insertTechQuery = "INSERT INTO TECHCONTACT VALUES(?,?,?,?,?,?,?,?,?,?,?)";
-					preparedStatement = connection.prepareStatement(insertTechQuery);
+				String insertContactsQuery = "INSERT INTO IP_WHOIS_CONTACT VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+				preparedStatement = connection.prepareStatement(insertContactsQuery);
+				if(whoisNode.getOrgTech() !=null && whoisNode.getOrgTech().size() > 0){					
 					WhoisNodeBuilder.insertTechContactToDbValues(whoisNode, preparedStatement);
-					preparedStatement.executeBatch();
 				}
 
 				if(whoisNode.getOrgAbuse() !=null && whoisNode.getOrgAbuse().size() > 0){
-					String insertAbuseQuery = "INSERT INTO ABUSECONTACT VALUES(?,?,?,?,?,?,?,?,?,?)";
-					preparedStatement = connection.prepareStatement(insertAbuseQuery);
 					WhoisNodeBuilder.insertAbuseContactToDbValues(whoisNode, preparedStatement);
-					preparedStatement.executeBatch();
 				}
+				
+				if(whoisNode.getOrgAdmin() !=null && whoisNode.getOrgAdmin().size() >0){
+					WhoisNodeBuilder.insertAdminContactToDbValues(whoisNode, preparedStatement);
+				}
+				preparedStatement.executeBatch();
+
 			}catch(SQLException e){
 				if(logger.isErrorEnabled())
 					logger.error("Exception Inserting into DB Tables.");

@@ -11,23 +11,23 @@ import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 
 public class WhoIsService extends Service<WhoIsConfiguration>{
-	
+
 	private final static Logger logger=LoggerFactory.getLogger(WhoIsService.class);
-	
+
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		if(logger.isDebugEnabled())
-		logger.debug("Start running services.");
-		
-new WhoIsService().run(args);
+			logger.debug("Start running services.");
+
+		new WhoIsService().run(args);
 	}
 
 	@Override
 	public void initialize(Bootstrap<WhoIsConfiguration> aBootStrap) {
 		// TODO Auto-generated method stub
 		if(logger.isDebugEnabled())
-		logger.debug("Initializing WhoIs service.");
-		
+			logger.debug("Initializing WhoIs service.");
+
 		aBootStrap.setName("WhoIs Service for IP");
 	}
 
@@ -35,10 +35,12 @@ new WhoIsService().run(args);
 	public void run(WhoIsConfiguration conf, Environment env) throws Exception {
 		// TODO Auto-generated method stub
 		if(logger.isDebugEnabled())
-		logger.debug("Build cache and adding resources to environment varibale.");
-		
+			logger.debug("Build cache and adding resources to environment varibale.");
+
 		BuildCache.cacheBuild(conf);
 		env.addResource(new IPResource(conf));
+
+
 	}
 
 }
