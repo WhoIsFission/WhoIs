@@ -3,7 +3,7 @@ package org.e8.whois.dao.builder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -205,11 +205,11 @@ public class WhoisNodeBuilder {
 		if(logger.isDebugEnabled())
 			logger.debug("Setting abuse contacts list");
 
-		List<OrganisationAbuse> abuseContactList = Collections.emptyList();
-		List<OrganisationTech> techContactList = Collections.emptyList();
-		List<OrganisationAdmin> adminContactList = Collections.emptyList();
+		List<OrganisationAbuse> abuseContactList = new ArrayList<OrganisationAbuse>();
+		List<OrganisationTech> techContactList = new ArrayList<OrganisationTech>();
+		List<OrganisationAdmin> adminContactList = new ArrayList<OrganisationAdmin>();
 
-		while(resultSet!=null&&resultSet.next()){
+		while(resultSet!=null && resultSet.next()){
 			String contactType = resultSet.getString("contact_type");
 			if(contactType !=null && contactType.equalsIgnoreCase("ADMIN")){
 				OrganisationAdmin orgAdmin = setAdminContactListValues(resultSet);

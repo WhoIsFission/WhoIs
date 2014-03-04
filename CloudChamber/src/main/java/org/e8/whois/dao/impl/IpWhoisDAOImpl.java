@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -109,7 +110,7 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 	 * 
 	 */
 	private List<WhoIsNode<Long>> returnResultSet(ResultSet resultSet,Connection connection,boolean isCurrentData) throws SQLException {
-		List<WhoIsNode<Long>> whoisNodeList = Collections.emptyList();
+		List<WhoIsNode<Long>> whoisNodeList = new ArrayList<WhoIsNode<Long>>();
 		WhoIsNode<Long> whoisNode = null;
 
 		while (resultSet!=null && resultSet.next()) {	     
