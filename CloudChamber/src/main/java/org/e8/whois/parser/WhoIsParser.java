@@ -1,6 +1,7 @@
 package org.e8.whois.parser;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.e8.whois.client.WhoIsClient;
 import org.e8.whois.exceptionHandling.WhoIsException;
@@ -34,17 +35,21 @@ public class WhoIsParser {
 		WhoIsNode<Long> responseNode=null;
 		try{
 		String response=WhoIsClient.callCommandRestClient(ipAddress);
-		
+		System.out.println(response);
 		Parser parser=ParserBuilder.getParser(response);
 		if(parser!=null){
 		responseNode=parser.parse(response);
 		responseNode.setRawResponse(response);
-		responseNode.setIsCurrentData(true);
+		responseNode.setCurrentData(true);
 		for(int i=0;i<responseNode.getOrgAbuse().size();i++)
 			responseNode.getOrgAbuse().get(i).setCurrentdata(true);
 		
 		for(int i=0;i<responseNode.getOrgTech().size();i++)
 			responseNode.getOrgTech().get(i).setCurrentdata(true);
+		
+		
+		for(int i=0;i<responseNode.getOrgAdmin().size();i++)
+			responseNode.getOrgAdmin().get(i).setCurrentdata(true);
 		}
 		if(logger.isDebugEnabled())			
 		logger.debug("Returning parsed response from WhoIs client");
@@ -52,6 +57,10 @@ public class WhoIsParser {
 			 if(logger.isErrorEnabled())
 					logger.error("I/O exception while writing/reading to/from output source in parsing process");
 				throw new WhoIsException("I/O exception while writing/reading to/from output source in parsing process",e);
+		} catch (ParseException e) {
+			if(logger.isErrorEnabled())
+				logger.error("Exception in parsing process");
+			throw new WhoIsException("Exception in parsing process",e);
 		}
 		return responseNode;
 	}

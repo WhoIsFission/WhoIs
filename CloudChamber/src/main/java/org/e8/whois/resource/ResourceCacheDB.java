@@ -17,7 +17,9 @@ import org.e8.whois.dao.IpWhoisDAO;
 import org.e8.whois.exceptionHandling.WhoIsException;
 import org.e8.whois.model.Organisation;
 import org.e8.whois.model.OrganisationAbuse;
+import org.e8.whois.model.OrganisationAdmin;
 import org.e8.whois.model.OrganisationTech;
+import org.e8.whois.model.Route;
 import org.e8.whois.model.WhoIsNode;
 import org.e8.whois.parser.WhoIsParser;
 import org.slf4j.Logger;
@@ -199,7 +201,7 @@ public class ResourceCacheDB {
 		 logger.debug("Started building response.");
 		try{	
 		 JAXBContext jaxbContext=JAXBContext.newInstance(new Class[]{WhoIsNode.class,Organisation.class,
-				 												OrganisationAbuse.class,OrganisationTech.class});
+				 												OrganisationAbuse.class,OrganisationTech.class,OrganisationAdmin.class,Route.class});
 		 Marshaller marshaller=jaxbContext.createMarshaller();
 		 ByteArrayOutputStream os=new ByteArrayOutputStream();
 		 marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);

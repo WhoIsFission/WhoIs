@@ -1,5 +1,7 @@
 package org.e8.whois.model;
 
+import java.util.Date;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,8 +30,24 @@ public class OrganisationAbuse {
 	private String orgAbuseAddress;
 	private boolean isCurrentdata=true;
 	private String contactType;
+	@XmlElement(name="registrationDate")
+	private Date regDate;
+	@XmlElement(name="updatedDate")
+	private Date updatedDate;
 	
 	
+	public Date getRegDate() {
+		return regDate;
+	}
+	public void setRegDate(Date regDate) {
+		this.regDate = regDate;
+	}
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
 	public String getContactType() {
 		return contactType;
 	}	

@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /***
  * WhoIsClient is used for querying RIR's given an IP address. 
- * It queries IANA registry first to get authentic whois server followed by querying whois server 
+ * It queries IANA registry first to get authorized whois server followed by querying the server 
  * for information needed.
  *
  *

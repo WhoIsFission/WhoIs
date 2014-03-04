@@ -43,6 +43,16 @@ public class WhoIsNode<T> implements Comparable<WhoIsNode<T>> {
 	private String ref;
 	private boolean isCurrentData =true;//1 implies current data 0 - historic data// whynot boolean
 	private String rawResponse;
+	@XmlAnyElement(lax=true)
+	private Route route;
+
+	public Route getRoute() {
+		return route;
+	}
+
+	public void setRoute(Route route) {
+		this.route = route;
+	}
 
 	public String getRawResponse() {
 		return rawResponse;
