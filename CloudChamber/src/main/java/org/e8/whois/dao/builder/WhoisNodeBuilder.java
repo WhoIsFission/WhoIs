@@ -68,7 +68,7 @@ public class WhoisNodeBuilder {
 			whoisNode.setUpdatedDate(updateddate);
 		}
 
-		whoisNode.setIsCurrentData(resultSet.getBoolean(24));
+		whoisNode.setCurrentData(resultSet.getBoolean(24));
 		whoisNode.setRawResponse(resultSet.getString(26));
 		return whoisNode;
 	}
@@ -253,7 +253,7 @@ public class WhoisNodeBuilder {
 			preparedStatement.setTimestamp(22,null);			
 			preparedStatement.setString(23,null);
 		}
-		preparedStatement.setBoolean(24,whoisNode.getIsCurrentData());
+		preparedStatement.setBoolean(24,whoisNode.isCurrentData());
 		preparedStatement.setTimestamp(25,new java.sql.Timestamp(new Date().getTime()));
 		preparedStatement.setString(26,whoisNode.getRawResponse());
 	}
