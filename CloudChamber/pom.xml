@@ -59,7 +59,7 @@
     <artifactId>exec-maven-plugin</artifactId>
     <version>1.2.1</version>
     <configuration>
-        <mainClass>org.e8.whois.service.WhoIsService</mainClass>
+        <mainClass>com.e8security.cloudchamber.whois.service.WhoIsService</mainClass>
         <arguments>
             <argument>server</argument>
             <argument>configuration.yml</argument>
