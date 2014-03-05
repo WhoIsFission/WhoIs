@@ -1,4 +1,4 @@
-package org.e8.whois.dao;
+package com.e8Security.cloudChamber.whois.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,10 +6,11 @@ import java.sql.SQLException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.e8.whois.configuration.WhoIsConfiguration;
-import org.e8.whois.exceptionHandling.WhoIsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.e8Security.cloudChamber.whois.configuration.WhoIsConfiguration;
+import com.e8Security.cloudChamber.whois.exceptionHandling.WhoIsException;
 
 /***
  * ConnectionManager is used as a connection pool manager with configured no. of connections

@@ -1,4 +1,4 @@
-package org.e8.whois.parser;
+package com.e8Security.cloudChamber.whois.parser;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

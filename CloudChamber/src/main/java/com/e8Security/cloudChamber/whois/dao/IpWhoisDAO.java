@@ -1,9 +1,9 @@
-package org.e8.whois.dao;
+package com.e8Security.cloudChamber.whois.dao;
 
 import java.util.List;
 
-import org.e8.whois.exceptionHandling.WhoIsException;
-import org.e8.whois.model.WhoIsNode;
+import com.e8Security.cloudChamber.whois.exceptionHandling.WhoIsException;
+import com.e8Security.cloudChamber.whois.model.WhoIsNode;
 
 /***
  * Template for all DAO implementation

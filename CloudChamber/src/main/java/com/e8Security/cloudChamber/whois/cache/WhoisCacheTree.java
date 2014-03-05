@@ -1,4 +1,4 @@
-package org.e8.whois.cache;
+package com.e8Security.cloudChamber.whois.cache;
 /**
  * 
  * This class is used for constructing Interval Tree which can hold range of IP Addresses
@@ -9,9 +9,10 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.e8.whois.model.WhoIsNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.e8Security.cloudChamber.whois.model.WhoIsNode;
 
 public class WhoisCacheTree<T>{
 

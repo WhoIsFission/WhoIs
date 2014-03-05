@@ -1,4 +1,4 @@
-package org.e8.whois.dao.builder;
+package com.e8Security.cloudChamber.whois.dao.builder;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.e8.whois.model.Organisation;
-import org.e8.whois.model.OrganisationAbuse;
-import org.e8.whois.model.OrganisationAdmin;
-import org.e8.whois.model.OrganisationTech;
-import org.e8.whois.model.Route;
-import org.e8.whois.model.WhoIsNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.e8Security.cloudChamber.whois.model.Organisation;
+import com.e8Security.cloudChamber.whois.model.OrganisationAbuse;
+import com.e8Security.cloudChamber.whois.model.OrganisationAdmin;
+import com.e8Security.cloudChamber.whois.model.OrganisationTech;
+import com.e8Security.cloudChamber.whois.model.Route;
+import com.e8Security.cloudChamber.whois.model.WhoIsNode;
 
 /***
  * WhoisNodeBuilder is used to build elements of whoisNode

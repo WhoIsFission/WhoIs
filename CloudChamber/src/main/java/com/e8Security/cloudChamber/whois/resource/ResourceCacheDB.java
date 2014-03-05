@@ -1,4 +1,4 @@
-package org.e8.whois.resource;
+package com.e8Security.cloudChamber.whois.resource;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -10,21 +10,21 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.e8.whois.cache.WhoisCacheTree;
-import org.e8.whois.configuration.WhoIsConfiguration;
-import org.e8.whois.dao.DAOFactory;
-import org.e8.whois.dao.IpWhoisDAO;
-import org.e8.whois.exceptionHandling.WhoIsException;
-import org.e8.whois.model.Organisation;
-import org.e8.whois.model.OrganisationAbuse;
-import org.e8.whois.model.OrganisationAdmin;
-import org.e8.whois.model.OrganisationTech;
-import org.e8.whois.model.Route;
-import org.e8.whois.model.WhoIsNode;
-import org.e8.whois.parser.WhoIsParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.e8Security.cloudChamber.whois.cache.WhoisCacheTree;
+import com.e8Security.cloudChamber.whois.configuration.WhoIsConfiguration;
+import com.e8Security.cloudChamber.whois.dao.DAOFactory;
+import com.e8Security.cloudChamber.whois.dao.IpWhoisDAO;
+import com.e8Security.cloudChamber.whois.exceptionHandling.WhoIsException;
+import com.e8Security.cloudChamber.whois.model.Organisation;
+import com.e8Security.cloudChamber.whois.model.OrganisationAbuse;
+import com.e8Security.cloudChamber.whois.model.OrganisationAdmin;
+import com.e8Security.cloudChamber.whois.model.OrganisationTech;
+import com.e8Security.cloudChamber.whois.model.Route;
+import com.e8Security.cloudChamber.whois.model.WhoIsNode;
+import com.e8Security.cloudChamber.whois.parser.WhoIsParser;
 import com.yammer.dropwizard.config.Configuration;
 
 /***

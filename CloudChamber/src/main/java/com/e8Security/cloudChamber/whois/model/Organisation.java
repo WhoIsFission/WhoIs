@@ -1,4 +1,4 @@
-package org.e8.whois.model;
+package com.e8Security.cloudChamber.whois.model;
 
 import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;

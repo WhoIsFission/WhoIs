@@ -1,9 +1,9 @@
-package org.e8.whois.parser;
+package com.e8Security.cloudChamber.whois.parser;
 
 import java.io.IOException;
 import java.text.ParseException;
 
-import org.e8.whois.model.WhoIsNode;
+import com.e8Security.cloudChamber.whois.model.WhoIsNode;
 
 /***
  * 

@@ -1,4 +1,4 @@
-package org.e8.whois.parser;
+package com.e8Security.cloudChamber.whois.parser;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -12,14 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.e8.whois.model.Organisation;
-import org.e8.whois.model.OrganisationAbuse;
-import org.e8.whois.model.OrganisationAdmin;
-import org.e8.whois.model.OrganisationTech;
-import org.e8.whois.model.Route;
-import org.e8.whois.model.WhoIsNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.e8Security.cloudChamber.whois.model.Organisation;
+import com.e8Security.cloudChamber.whois.model.OrganisationAbuse;
+import com.e8Security.cloudChamber.whois.model.OrganisationAdmin;
+import com.e8Security.cloudChamber.whois.model.OrganisationTech;
+import com.e8Security.cloudChamber.whois.model.Route;
+import com.e8Security.cloudChamber.whois.model.WhoIsNode;
 
 /***
  * Lacnic Parser is used to parse response text from Lacnic Registry
