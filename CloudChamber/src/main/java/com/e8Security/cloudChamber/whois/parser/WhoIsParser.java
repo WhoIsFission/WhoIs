@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.parser;
+package com.e8security.cloudchamber.whois.parser;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -6,9 +6,9 @@ import java.text.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.e8Security.cloudChamber.whois.client.WhoIsClient;
-import com.e8Security.cloudChamber.whois.exceptionHandling.WhoIsException;
-import com.e8Security.cloudChamber.whois.model.WhoIsNode;
+import com.e8security.cloudchamber.whois.client.WhoIsClient;
+import com.e8security.cloudchamber.whois.exceptionHandling.WhoIsException;
+import com.e8security.cloudchamber.whois.model.WhoIsNode;
 
 /***
  * 

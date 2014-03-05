@@ -1,11 +1,11 @@
-package com.e8Security.cloudChamber.whois.dao;
+package com.e8security.cloudchamber.whois.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.e8Security.cloudChamber.whois.configuration.WhoIsConfiguration;
-import com.e8Security.cloudChamber.whois.dao.impl.IpWhoisDAOImpl;
-import com.e8Security.cloudChamber.whois.exceptionHandling.WhoIsException;
+import com.e8security.cloudchamber.whois.configuration.WhoIsConfiguration;
+import com.e8security.cloudchamber.whois.dao.impl.IpWhoisDAOImpl;
+import com.e8security.cloudchamber.whois.exceptionHandling.WhoIsException;
 
 
 /***

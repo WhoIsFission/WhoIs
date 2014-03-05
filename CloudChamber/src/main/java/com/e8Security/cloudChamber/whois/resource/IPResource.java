@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.resource;
+package com.e8security.cloudchamber.whois.resource;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -7,8 +7,8 @@ import javax.ws.rs.QueryParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.e8Security.cloudChamber.whois.configuration.WhoIsConfiguration;
-import com.e8Security.cloudChamber.whois.exceptionHandling.WhoIsException;
+import com.e8security.cloudchamber.whois.configuration.WhoIsConfiguration;
+import com.e8security.cloudchamber.whois.exceptionHandling.WhoIsException;
 
 
 

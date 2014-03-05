@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.parser;
+package com.e8security.cloudchamber.whois.parser;
 
 import org.apache.commons.net.util.SubnetUtils;
 

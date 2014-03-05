@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.configuration;
+package com.e8security.cloudchamber.whois.configuration;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

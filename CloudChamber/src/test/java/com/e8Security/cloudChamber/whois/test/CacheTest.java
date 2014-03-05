@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.test;
+package com.e8security.cloudchamber.whois.test;
 /**
  * 
  * This class is used for constructing Interval Tree which can hold range of IP Addresses

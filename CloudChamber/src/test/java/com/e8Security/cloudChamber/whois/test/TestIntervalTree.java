@@ -1,9 +1,9 @@
-package com.e8Security.cloudChamber.whois.test;
+package com.e8security.cloudchamber.whois.test;
 
 import java.net.UnknownHostException;
 import java.util.Set;
 
-import com.e8Security.cloudChamber.whois.test.CacheTest.TreeNode;
+import com.e8security.cloudchamber.whois.test.CacheTest.TreeNode;
 
 
 

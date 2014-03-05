@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.model;
+package com.e8security.cloudchamber.whois.model;
 
 import java.util.Date;
 import java.util.List;

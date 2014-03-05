@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.dao.impl;
+package com.e8security.cloudchamber.whois.dao.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,14 +13,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.e8Security.cloudChamber.whois.configuration.WhoIsConfiguration;
-import com.e8Security.cloudChamber.whois.dao.ConnectionManager;
-import com.e8Security.cloudChamber.whois.dao.IpWhoisDAO;
-import com.e8Security.cloudChamber.whois.dao.builder.WhoisNodeBuilder;
-import com.e8Security.cloudChamber.whois.exceptionHandling.WhoIsException;
-import com.e8Security.cloudChamber.whois.model.Organisation;
-import com.e8Security.cloudChamber.whois.model.Route;
-import com.e8Security.cloudChamber.whois.model.WhoIsNode;
+import com.e8security.cloudchamber.whois.configuration.WhoIsConfiguration;
+import com.e8security.cloudchamber.whois.dao.ConnectionManager;
+import com.e8security.cloudchamber.whois.dao.IpWhoisDAO;
+import com.e8security.cloudchamber.whois.dao.builder.WhoisNodeBuilder;
+import com.e8security.cloudchamber.whois.exceptionHandling.WhoIsException;
+import com.e8security.cloudchamber.whois.model.Organisation;
+import com.e8security.cloudchamber.whois.model.Route;
+import com.e8security.cloudchamber.whois.model.WhoIsNode;
 
 /***
  * DAO implementation class is used for fetching, inserting,

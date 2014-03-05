@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.client;
+package com.e8security.cloudchamber.whois.client;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

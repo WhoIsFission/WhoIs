@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.exceptionHandling;
+package com.e8security.cloudchamber.whois.exceptionHandling;
 
 /**
  * WhoIsException class is used to provide meaningful exception messages to callers.

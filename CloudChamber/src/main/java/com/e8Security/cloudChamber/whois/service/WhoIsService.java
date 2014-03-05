@@ -1,12 +1,12 @@
-package com.e8Security.cloudChamber.whois.service;
+package com.e8security.cloudchamber.whois.service;
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.e8Security.cloudChamber.whois.client.RegistryLoader;
-import com.e8Security.cloudChamber.whois.configuration.WhoIsConfiguration;
-import com.e8Security.cloudChamber.whois.resource.IPResource;
+import com.e8security.cloudchamber.whois.client.RegistryLoader;
+import com.e8security.cloudchamber.whois.configuration.WhoIsConfiguration;
+import com.e8security.cloudchamber.whois.resource.IPResource;
 import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;

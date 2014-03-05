@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.test;
+package com.e8security.cloudchamber.whois.test;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;

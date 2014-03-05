@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.parser;
+package com.e8security.cloudchamber.whois.parser;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -15,12 +15,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.e8Security.cloudChamber.whois.model.Organisation;
-import com.e8Security.cloudChamber.whois.model.OrganisationAbuse;
-import com.e8Security.cloudChamber.whois.model.OrganisationAdmin;
-import com.e8Security.cloudChamber.whois.model.OrganisationTech;
-import com.e8Security.cloudChamber.whois.model.Route;
-import com.e8Security.cloudChamber.whois.model.WhoIsNode;
+import com.e8security.cloudchamber.whois.model.Organisation;
+import com.e8security.cloudchamber.whois.model.OrganisationAbuse;
+import com.e8security.cloudchamber.whois.model.OrganisationAdmin;
+import com.e8security.cloudchamber.whois.model.OrganisationTech;
+import com.e8security.cloudchamber.whois.model.Route;
+import com.e8security.cloudchamber.whois.model.WhoIsNode;
 
 /***
  * Apnic Parser is used to parse response text from Apnic Registry

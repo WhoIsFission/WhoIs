@@ -1,6 +1,5 @@
-package com.e8Security.cloudChamber.whois;
+package com.e8security.cloudchamber.whois;
 
-import org.apache.commons.net.util.SubnetUtils;
 
 /**
  * Hello world!

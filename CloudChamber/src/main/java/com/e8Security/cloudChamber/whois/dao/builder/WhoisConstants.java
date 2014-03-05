@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.dao.builder;
+package com.e8security.cloudchamber.whois.dao.builder;
 
 public final class WhoisConstants  {
 	

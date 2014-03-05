@@ -1,4 +1,4 @@
-package com.e8Security.cloudChamber.whois.parser;
+package com.e8security.cloudchamber.whois.parser;
 
 /***
  * ParsingPattern enum is used for parsing different patterns.

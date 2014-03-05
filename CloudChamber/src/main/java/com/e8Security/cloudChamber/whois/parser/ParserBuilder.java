@@ -1,13 +1,12 @@
-package com.e8Security.cloudChamber.whois.parser;
+package com.e8security.cloudchamber.whois.parser;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.slf4j.LoggerFactory;
-
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /***
  * Builder class for getting various parser depending on respective RIR.
