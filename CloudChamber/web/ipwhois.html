@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+ .button1 {
+  color:#08233e;
+  font:2.2em Futura, AppleGothic, sans-serif;
+  font-size:100%;
+  padding:14px;
+  background:url(overlay.png) repeat-x center;
+  background-color:#CCEEFF;
+  border:1px solid ;
+  -moz-border-radius:10px;
+  -webkit-border-radius:10px;
+  border-radius:10px;
+  border-bottom:1px solid ;
+  -moz-box-shadow:inset 0 1px 0 black;
+  -webkit-box-shadow:inset 0 1px 0 black;
+  box-shadow:inset 0 1px 0 black;
+  cursor:pointer;
+ }
+ .button1:hover {
+  background-color:#DFBFBF;
+ }
+ .inputbox{
+ width:200px; 
+ height:30px;
+ -webkit-border-radius: 10px;
+ -moz-border-radius: 10px;
+ border-radius: 10px;
+ }
+</style>
+<script>
+function setvalue() {
+	document.getElementById('ipaddress').value = "";
+}
+	function loadXMLDoc() {
+		
+		var xmlhttp;
+		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp = new XMLHttpRequest();
+		} else {// code for IE6, IE5
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				var xmlDoc = xmlhttp.responseText;
+				document.getElementById("myDiv").textContent = xmlDoc;
+			}
+		};
+		var ipaddress = document.getElementById('ipaddress').value;
+		xmlhttp.open("GET", "http://localhost:8080/whois/ip/?ip=" + ipaddress,
+				true);
+		xmlhttp.send(null);
+		
+	};
+</script>
+</head>
+<body style="background-color: black;">
+<br>
+<br>
+	<table height="200px;" width = "100%">
+		<tr align="center" valign="bottom">
+			<td><img src="images/e8logo.png"
+				style="max-width: 70%; max-height: 70%;"></td>
+					</tr>
+		</table>
+		<table height="50px" width = "100%">	
+			<tr align="center" valign="top">				
+				<td><input type="text" class="inputbox" id="ipaddress" value="Enter IP Address.." onfocus = "setvalue()"/></td>				
+			</tr>
+			<tr></tr><tr></tr>
+			<tr align="center">
+			<td><button type="button" class= "button1" onclick="loadXMLDoc()">Request IPWhois</button></td>
+			</tr>
+		</table>
+		<div id="myDiv" style="color:#F6CEF5"></div>
+	</div>
+</body>
+</html>
