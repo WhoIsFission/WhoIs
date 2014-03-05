@@ -1,8 +1,10 @@
-package org.e8.whois.client;
+package com.e8Security.cloudChamber.whois.test;
 
-import org.e8.whois.exceptionHandling.WhoIsException;
-import org.e8.whois.model.WhoIsNode;
-import org.e8.whois.parser.WhoIsParser;
+import com.e8Security.cloudChamber.whois.exceptionHandling.WhoIsException;
+import com.e8Security.cloudChamber.whois.model.WhoIsNode;
+import com.e8Security.cloudChamber.whois.parser.WhoIsParser;
+
+
 
 public class ParserTest {
 

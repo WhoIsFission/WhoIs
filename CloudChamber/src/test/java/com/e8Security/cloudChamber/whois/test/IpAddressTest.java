@@ -1,8 +1,10 @@
-package org.e8.whois.client;
+package com.e8Security.cloudChamber.whois.test;
 
 import java.io.FileNotFoundException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.e8Security.cloudChamber.whois.client.RegistryLoader;
 
 public class IpAddressTest {
 	

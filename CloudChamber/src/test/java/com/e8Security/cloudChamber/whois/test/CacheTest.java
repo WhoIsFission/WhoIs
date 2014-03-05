@@ -1,15 +1,14 @@
-package org.e8.whois.client;
+package com.e8Security.cloudChamber.whois.test;
 /**
  * 
  * This class is used for constructing Interval Tree which can hold range of IP Addresses
  * and provides mechanism of searching specific, generic and all ranges of IP address.
  * 
  */
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
-public class IPIntervalTree<T>{
+public class CacheTest<T>{
 	/**
 	 * Static inner class is used for holding ranges 
 	 *

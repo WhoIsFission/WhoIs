@@ -1,9 +1,9 @@
-package org.e8.whois.client;
+package com.e8Security.cloudChamber.whois.test;
 
 import java.net.UnknownHostException;
 import java.util.Set;
 
-import org.e8.whois.client.IPIntervalTree.TreeNode;
+import com.e8Security.cloudChamber.whois.test.CacheTest.TreeNode;
 
 
 
@@ -32,7 +32,7 @@ public class TestIntervalTree {
 	
 	
 	
-	IPIntervalTree<Long> tree=new IPIntervalTree<Long>();
+	CacheTest<Long> tree=new CacheTest<Long>();
 	tree.insert(ip11, ip12);
 	tree.insert(ip21, ip22);
 	tree.insert(ip31, ip32);
