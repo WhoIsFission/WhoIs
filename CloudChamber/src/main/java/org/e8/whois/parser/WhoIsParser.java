@@ -38,7 +38,7 @@ public class WhoIsParser {
 		System.out.println(response);
 		Parser parser=ParserBuilder.getParser(response);
 		if(parser!=null){
-		responseNode=parser.parse(response);
+		responseNode=parser.parse(response,ipAddress);
 		responseNode.setRawResponse(response);
 		responseNode.setCurrentData(true);
 		for(int i=0;i<responseNode.getOrgAbuse().size();i++)

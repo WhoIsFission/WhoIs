@@ -80,7 +80,7 @@ private List<String> getListOfContacts(String aContactName,String aValueInet){
 	 * @throws ParseException 
 	 * 
 	 */
-		public WhoIsNode<Long> parse(String buf) throws IOException, ParseException {
+		public WhoIsNode<Long> parse(String buf,String aIpAddress) throws IOException, ParseException {
 			// TODO Auto-generated method stub
 			if(logger.isDebugEnabled())
 				logger.debug("Started parsing by Ripe parser");
@@ -105,7 +105,7 @@ private List<String> getListOfContacts(String aContactName,String aValueInet){
 			 String value=str.substring(index+1).trim();
 			 // for inetnum
 			 if("inetnum".equalsIgnoreCase(prop)){
-				 responseNode=caseParsing(prop,value,responseNode,"NETBLOCK");
+				 responseNode=caseParsing(prop,value,responseNode,"NETBLOCK",aIpAddress);
 				 String strInet="";
 					while((strInet=bufRead.readLine())!=null&&!"".equals((strInet))){
 						int indexInet=strInet.indexOf(":");
@@ -119,19 +119,19 @@ private List<String> getListOfContacts(String aContactName,String aValueInet){
 						 }else if("admin-c".equalsIgnoreCase(propInet)){
 							 contactsMap.put(valueInet, getListOfContacts("admin-c", valueInet));
 						 }
-						 responseNode=caseParsing(propInet,valueInet,responseNode,"NETBLOCK");
+						 responseNode=caseParsing(propInet,valueInet,responseNode,"NETBLOCK",aIpAddress);
 					}
 				}
 			 } else if("organisation".equalsIgnoreCase(prop)||"irt".equalsIgnoreCase(prop)){
 
-				 responseNode=caseParsing(prop,value,responseNode,"ORGANISATION");
+				 responseNode=caseParsing(prop,value,responseNode,"ORGANISATION",aIpAddress);
 				 String strOrg="";
 					while((strOrg=bufRead.readLine())!=null&&!"".equals(strOrg)){
 						int indexOrg=strOrg.indexOf(":");
 						if(indexOrg>0){
 						 String propOrg=strOrg.substring(0, indexOrg).trim();
 						 String valueOrg=strOrg.substring(indexOrg+1).trim();
-						 responseNode=caseParsing(propOrg,valueOrg,responseNode,"ORGANISATION");
+						 responseNode=caseParsing(propOrg,valueOrg,responseNode,"ORGANISATION",aIpAddress);
 						}
 				   }			 
 			 }else if("person".equalsIgnoreCase(prop)||"role".equalsIgnoreCase(prop)||"nic-hdl".equalsIgnoreCase(prop)){
@@ -171,7 +171,7 @@ private List<String> getListOfContacts(String aContactName,String aValueInet){
 									if(indColon>0){
 									 String propTech=strOrgTech.substring(0, indColon);
 									 String valueTech=strOrgTech.substring(indColon+1).trim();
-							 responseNode=caseParsing(propTech,valueTech,responseNode,"TECH");
+							 responseNode=caseParsing(propTech,valueTech,responseNode,"TECH",aIpAddress);
 									}
 				     	  }
 				 }else if("abuse-c".equalsIgnoreCase(contactName)){
@@ -184,7 +184,7 @@ private List<String> getListOfContacts(String aContactName,String aValueInet){
 									if(indColon>0){
 									 String propAbuse=strOrgAbuse.substring(0, indColon);
 									 String valueAbuse=strOrgAbuse.substring(indColon+1).trim();
-							 responseNode=caseParsing(propAbuse,valueAbuse,responseNode,"ABUSE");
+							 responseNode=caseParsing(propAbuse,valueAbuse,responseNode,"ABUSE",aIpAddress);
 									}
 					  }
 		       }else if("admin-c".equalsIgnoreCase(contactName)){
@@ -197,7 +197,7 @@ private List<String> getListOfContacts(String aContactName,String aValueInet){
 											if(indColon>0){
 											 String propTech=strOrgAdmin.substring(0, indColon);
 											 String valueTech=strOrgAdmin.substring(indColon+1).trim();
-									 responseNode=caseParsing(propTech,valueTech,responseNode,"ADMIN");
+									 responseNode=caseParsing(propTech,valueTech,responseNode,"ADMIN",aIpAddress);
 											}
 								  }
 					  	  }
@@ -210,7 +210,7 @@ private List<String> getListOfContacts(String aContactName,String aValueInet){
 						if(indexASN>0){
 						 String propAsn=strAsn.substring(0, indexASN);
 						 String valueAsn=strAsn.substring(indexASN+1);
-						 responseNode=caseParsing(propAsn,valueAsn,responseNode,"ASN");
+						 responseNode=caseParsing(propAsn,valueAsn,responseNode,"ASN",aIpAddress);
 						}
 				}
 			 }
@@ -226,7 +226,7 @@ private List<String> getListOfContacts(String aContactName,String aValueInet){
 		 * 
 		 * Case based parsing
 		 */
-		private WhoIsNode<Long> caseParsing(String aPattern,String aValue,WhoIsNode<Long> node,String aType) throws ParseException {
+		private WhoIsNode<Long> caseParsing(String aPattern,String aValue,WhoIsNode<Long> node,String aType,String aIpAddress) throws ParseException {
 			ParsingPattern pattern=AFRINIC_PARSE_MAP.get(aPattern);
 			OrganisationTech orgTech;		
 			OrganisationAbuse orgAbuse;
@@ -247,10 +247,24 @@ private List<String> getListOfContacts(String aContactName,String aValueInet){
 				  }
 				  String netrange[]=aValue.split("-");
 				  if(netrange!=null&&netrange.length>1){
+					  String netAddr1[]=netrange[0].trim().split("\\.");
+					  String netAddr2[]=netrange[1].trim().split("\\.");
+					  int addr00=Integer.valueOf(netAddr1[0]);
+					  int addr01=Integer.valueOf(netAddr1[1]);
+					  int addr10=Integer.valueOf(netAddr2[0]);
+					  int addr11=Integer.valueOf(netAddr2[1]);
+					  // To check for mask >=16 for IP ranges to be set
+					  if((addr00^addr10)==0&&(addr01^addr11)==0){
 					  node.setStartAddress(netrange[0].trim());
 					  node.setEndAddress(netrange[1].trim());
 				  node.setLow(this.ipToLong(netrange[0].trim()));
 				  node.setHigh(this.ipToLong(netrange[1].trim()));
+					  }else{
+						  node.setStartAddress(aIpAddress.trim());
+						  node.setEndAddress(aIpAddress.trim());
+						  node.setLow(this.ipToLong(aIpAddress.trim()));
+						  node.setHigh(this.ipToLong(aIpAddress.trim()));  
+					  }
 				   }
 				  }
 				  break;

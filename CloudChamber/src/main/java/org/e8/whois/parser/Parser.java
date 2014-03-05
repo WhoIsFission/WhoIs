@@ -13,6 +13,6 @@ import org.e8.whois.model.WhoIsNode;
  */
 public interface Parser {
 
-	public WhoIsNode<Long> parse(String buf) throws IOException, ParseException;
+	public WhoIsNode<Long> parse(String buf,String aIpAddress) throws IOException, ParseException;
 	
 }

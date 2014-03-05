@@ -81,7 +81,7 @@ public class LacnicParser extends IPParser{
 		 * @throws ParseException 
 		 * 
 		 */
-			public WhoIsNode<Long> parse(String buf) throws IOException, ParseException {
+			public WhoIsNode<Long> parse(String buf,String aIpAddress) throws IOException, ParseException {
 				// TODO Auto-generated method stub
 				if(logger.isDebugEnabled())
 					logger.debug("Started parsing by Lacnic parser");
@@ -106,7 +106,7 @@ public class LacnicParser extends IPParser{
 				 String value=str.substring(index+1).trim();
 				 // for inetnum
 				 if("inetnum".equalsIgnoreCase(prop)){
-					 responseNode=caseParsing(prop,value,responseNode,"NETBLOCK");
+					 responseNode=caseParsing(prop,value,responseNode,"NETBLOCK",aIpAddress);
 					 String strInet="";
 						while((strInet=bufRead.readLine())!=null&&!"".equals((strInet))){
 							int indexInet=strInet.indexOf(":");
@@ -120,19 +120,19 @@ public class LacnicParser extends IPParser{
 							 }else if("admin-c".equalsIgnoreCase(propInet)){
 								 contactsMap.put(valueInet, getListOfContacts("admin-c", valueInet));
 							 }
-							 responseNode=caseParsing(propInet,valueInet,responseNode,"NETBLOCK");
+							 responseNode=caseParsing(propInet,valueInet,responseNode,"NETBLOCK",aIpAddress);
 						}
 					}
 				 } else if("organisation".equalsIgnoreCase(prop)||"irt".equalsIgnoreCase(prop)){
 
-					 responseNode=caseParsing(prop,value,responseNode,"ORGANISATION");
+					 responseNode=caseParsing(prop,value,responseNode,"ORGANISATION",aIpAddress);
 					 String strOrg="";
 						while((strOrg=bufRead.readLine())!=null&&!"".equals(strOrg)){
 							int indexOrg=strOrg.indexOf(":");
 							if(indexOrg>0){
 							 String propOrg=strOrg.substring(0, indexOrg).trim();
 							 String valueOrg=strOrg.substring(indexOrg+1).trim();
-							 responseNode=caseParsing(propOrg,valueOrg,responseNode,"ORGANISATION");
+							 responseNode=caseParsing(propOrg,valueOrg,responseNode,"ORGANISATION",aIpAddress);
 							}
 					   }			 
 				 }else if("person".equalsIgnoreCase(prop)||"role".equalsIgnoreCase(prop)||"nic-hdl".equalsIgnoreCase(prop)){
@@ -171,7 +171,7 @@ public class LacnicParser extends IPParser{
 										if(indColon>0){
 										 String propTech=strOrgTech.substring(0, indColon).trim();
 										 String valueTech=strOrgTech.substring(indColon+1).trim();
-								 responseNode=caseParsing(propTech,valueTech,responseNode,"TECH");
+								 responseNode=caseParsing(propTech,valueTech,responseNode,"TECH",aIpAddress);
 										}
 					     	  }
 								 bufReadOrgDetails.close();
@@ -185,7 +185,7 @@ public class LacnicParser extends IPParser{
 										if(indColon>0){
 										 String propAbuse=strOrgAbuse.substring(0, indColon).trim();
 										 String valueAbuse=strOrgAbuse.substring(indColon+1).trim();
-								 responseNode=caseParsing(propAbuse,valueAbuse,responseNode,"ABUSE");
+								 responseNode=caseParsing(propAbuse,valueAbuse,responseNode,"ABUSE",aIpAddress);
 										}
 						  }
 								 bufReadOrgDetails.close();
@@ -199,7 +199,7 @@ public class LacnicParser extends IPParser{
 												if(indColon>0){
 												 String propTech=strOrgAdmin.substring(0, indColon).trim();
 												 String valueTech=strOrgAdmin.substring(indColon+1).trim();
-										 responseNode=caseParsing(propTech,valueTech,responseNode,"ADMIN");
+										 responseNode=caseParsing(propTech,valueTech,responseNode,"ADMIN",aIpAddress);
 												}
 									  }
 									 bufReadOrgDetails.close();
@@ -213,7 +213,7 @@ public class LacnicParser extends IPParser{
 							if(indexASN>0){
 							 String propAsn=strAsn.substring(0, indexASN).trim();
 							 String valueAsn=strAsn.substring(indexASN+1).trim();
-							 responseNode=caseParsing(propAsn,valueAsn,responseNode,"ASN");
+							 responseNode=caseParsing(propAsn,valueAsn,responseNode,"ASN",aIpAddress);
 							}
 					}
 				 }
@@ -229,7 +229,7 @@ public class LacnicParser extends IPParser{
 			 * 
 			 * Case based parsing
 			 */
-			private WhoIsNode<Long> caseParsing(String aPattern,String aValue,WhoIsNode<Long> node,String aType) throws ParseException {
+			private WhoIsNode<Long> caseParsing(String aPattern,String aValue,WhoIsNode<Long> node,String aType,String aIpAddress) throws ParseException {
 				ParsingPattern pattern=LACNIC_PARSE_MAP.get(aPattern);
 				OrganisationTech orgTech;		
 				OrganisationAbuse orgAbuse;
@@ -250,11 +250,29 @@ public class LacnicParser extends IPParser{
 					  }
 					  String netrange[]=aValue.split("-");
 					  if(netrange!=null&&netrange.length>1){
+
+						  // Computing Net address and mask 
+						  String netAddr1[]=netrange[0].trim().split("\\.");
+						  String netAddr2[]=netrange[1].trim().split("\\.");
+						// calculating individual address part from start and end address
+						  int addr00=Integer.valueOf(netAddr1[0]);
+						  int addr01=Integer.valueOf(netAddr1[1]);
+						  int addr10=Integer.valueOf(netAddr2[0]);
+						  int addr11=Integer.valueOf(netAddr2[1]);
+						  
+						  if((addr00^addr10)==0&&(addr01^addr11)==0){
 						  node.setStartAddress(netrange[0].trim());
 						  node.setEndAddress(netrange[1].trim());
-					  node.setLow(this.ipToLong(netrange[0].trim()));
-					  node.setHigh(this.ipToLong(netrange[1].trim()));
-					   }
+						  node.setLow(this.ipToLong(netrange[0].trim()));
+						  node.setHigh(this.ipToLong(netrange[1].trim()));
+						  }else{
+							  node.setStartAddress(aIpAddress.trim());
+							  node.setEndAddress(aIpAddress.trim());
+							  node.setLow(this.ipToLong(aIpAddress.trim()));
+							  node.setHigh(this.ipToLong(aIpAddress.trim()));  
+						  }
+					  
+					  }
 					  }
 					  break;
 				  case  WHOIS_DESCR_PATTERN:

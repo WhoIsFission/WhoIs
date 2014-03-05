@@ -77,7 +77,7 @@ static{
  * parse logic for Arin.
  * 
  */
-	public WhoIsNode<Long> parse(String buf) throws IOException {
+	public WhoIsNode<Long> parse(String buf,String aIpAddress) throws IOException {
 		// TODO Auto-generated method stub
 		if(logger.isDebugEnabled())
 			logger.debug("Started parsing by Arin parser");
@@ -98,7 +98,7 @@ static{
 		if(index>0){
 		 String prop=str.substring(0, index);
 		 String value=str.substring(index+1);
-		 responseNode=caseParsing(prop,value.trim(),responseNode);
+		 responseNode=caseParsing(prop,value.trim(),responseNode,aIpAddress);
 			}
 	
 		}
@@ -112,7 +112,7 @@ static{
 	 * 
 	 * Case based parsing
 	 */
-	private WhoIsNode<Long> caseParsing(String aPattern,String aValue,WhoIsNode<Long> node) {
+	private WhoIsNode<Long> caseParsing(String aPattern,String aValue,WhoIsNode<Long> node,String aIpAddress) {
 		ParsingPattern pattern=ARIN_PARSE_MAP.get(aPattern);
 		SimpleDateFormat datePattern=new SimpleDateFormat("yyyy-MM-dd");
 		Date date;
@@ -134,10 +134,25 @@ static{
 			  }
 			  String netrange[]=aValue.split("-");
 			  if(netrange!=null&&netrange.length>1){
+				  // Computing Net address and mask 
+				  String netAddr1[]=netrange[0].trim().split("\\.");
+				  String netAddr2[]=netrange[1].trim().split("\\.");
+				  int addr00=Integer.valueOf(netAddr1[0]);
+				  int addr01=Integer.valueOf(netAddr1[1]);
+				  int addr10=Integer.valueOf(netAddr2[0]);
+				  int addr11=Integer.valueOf(netAddr2[1]);
+				  
+				  if((addr00^addr10)==0&&(addr01^addr11)==0){
 				  node.setStartAddress(netrange[0].trim());
 				  node.setEndAddress(netrange[1].trim());
-			  node.setLow(this.ipToLong(netrange[0].trim()));
-			  node.setHigh(this.ipToLong(netrange[1].trim()));
+				  node.setLow(this.ipToLong(netrange[0].trim()));
+				  node.setHigh(this.ipToLong(netrange[1].trim()));
+				  }else{
+					  node.setStartAddress(aIpAddress.trim());
+					  node.setEndAddress(aIpAddress.trim());
+					  node.setLow(this.ipToLong(aIpAddress.trim()));
+					  node.setHigh(this.ipToLong(aIpAddress.trim()));  
+				  }
 			  }
 			  break;
 			  
