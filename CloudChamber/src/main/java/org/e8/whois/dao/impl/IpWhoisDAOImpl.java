@@ -16,6 +16,7 @@ import org.e8.whois.dao.IpWhoisDAO;
 import org.e8.whois.dao.builder.WhoisNodeBuilder;
 import org.e8.whois.exceptionHandling.WhoIsException;
 import org.e8.whois.model.Organisation;
+import org.e8.whois.model.Route;
 import org.e8.whois.model.WhoIsNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,10 +118,12 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 			whoisNode = WhoisNodeBuilder.setWhoIsNodeValues(resultSet);
 			Organisation org= WhoisNodeBuilder.setOrganisationValues(resultSet);
 			whoisNode.setOrg(org);
-
+			Route route = WhoisNodeBuilder.setRouteValues(resultSet);
+			whoisNode.setRoute(route);
 			getContactDetails(connection,isCurrentData,whoisNode);
 
-			logger.debug("Tech contactlist available? ", whoisNode.getOrgTech() !=null);
+			logger.debug("Contactlist available?: Technical: "+ (whoisNode.getOrgTech() !=null) +"Abuse Contact:" + (whoisNode.getOrgAbuse() !=null)
+					+ "Admin Contact:" + (whoisNode.getOrgAdmin() !=null));
 
 			whoisNodeList.add(whoisNode);
 		}
@@ -268,7 +271,7 @@ public class IpWhoisDAOImpl implements IpWhoisDAO{
 		connection = connectDataBase();
 		if(connection!=null){
 			try{
-				String insertQuery = "INSERT INTO IP_WHOIS VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				String insertQuery = "INSERT INTO IP_WHOIS VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
 				WhoisNodeBuilder.insertWhoisToDbValues(whoisNode, preparedStatement);
 				preparedStatement.executeUpdate();

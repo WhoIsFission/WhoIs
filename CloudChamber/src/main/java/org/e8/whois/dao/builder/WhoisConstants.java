@@ -29,6 +29,7 @@ public final class WhoisConstants  {
 	  public static final String IS_CURRENT_DATA_COLUMNNAME = "is_current_data";
 	  public static final String LAST_UPDATED_TIME_COLUMNNAME = "last_updated_time";
 	  public static final String RAW_RESPONSE_COLUMNNAME = "raw_response";
+	  public static final String ROUTE_DESCRIPTION_COLUMNNAME = "route_description";
 
 	  //Column Names for IP_WHOIS_CONTACT table
 	  public static final String HANDLE_COLUMNNAME = "handle";

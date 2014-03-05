@@ -11,6 +11,7 @@ import org.e8.whois.model.Organisation;
 import org.e8.whois.model.OrganisationAbuse;
 import org.e8.whois.model.OrganisationAdmin;
 import org.e8.whois.model.OrganisationTech;
+import org.e8.whois.model.Route;
 import org.e8.whois.model.WhoIsNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,24 @@ public class WhoisNodeBuilder {
 
 		whoisNode.setCurrentData(resultSet.getBoolean(WhoisConstants.IS_CURRENT_DATA_COLUMNNAME));
 		whoisNode.setRawResponse(resultSet.getString(WhoisConstants.RAW_RESPONSE_COLUMNNAME));
+
 		return whoisNode;
+	}
+
+	/**
+	 * Set Route values from the result set passed. 
+	 * 
+	 * @param resultSet
+	 * @return Organisation
+	 * @throws SQLException
+	 */
+
+	public static Route setRouteValues(ResultSet resultSet) throws SQLException {
+		Route route = new Route();
+		route.setDescription(resultSet.getString(WhoisConstants.ROUTE_DESCRIPTION_COLUMNNAME));
+		route.setOriginASN(resultSet.getString(WhoisConstants.ORIGIN_AS_COLUMNNAME));
+
+		return route;
 	}
 
 	/**
@@ -144,7 +162,7 @@ public class WhoisNodeBuilder {
 		orgAbuse.setContactType(resultSet.getString(WhoisConstants.CONTACT_TYPE_COLUMNNAME));
 		return orgAbuse;
 	}
-	
+
 	/**
 	 * Set tech object values
 	 * 
@@ -168,7 +186,7 @@ public class WhoisNodeBuilder {
 		orgTech.setContactType(resultSet.getString(WhoisConstants.CONTACT_TYPE_COLUMNNAME));
 		return orgTech;
 	}
-	
+
 	/**
 	 * Set admin object values
 	 * 
@@ -247,7 +265,7 @@ public class WhoisNodeBuilder {
 
 		preparedStatement.setLong(1, whoisNode.getLow());
 		preparedStatement.setLong(2, whoisNode.getHigh());
-		preparedStatement.setString(3,whoisNode.getOriginAS());
+		//preparedStatement.setString(3,whoisNode.getOriginAS());
 		preparedStatement.setString(4,whoisNode.getNetName());
 		preparedStatement.setString(5, whoisNode.getNetHandle());
 		preparedStatement.setString(6,whoisNode.getParent());
@@ -313,6 +331,11 @@ public class WhoisNodeBuilder {
 		preparedStatement.setBoolean(24,whoisNode.isCurrentData());
 		preparedStatement.setTimestamp(25,new java.sql.Timestamp(new Date().getTime()));
 		preparedStatement.setString(26,whoisNode.getRawResponse());
+		Route route = whoisNode.getRoute();
+		if(route !=null){
+			preparedStatement.setString(3,route.getOriginASN());
+			preparedStatement.setString(27,route.getDescription());
+		}
 	}
 
 	/**
@@ -375,7 +398,7 @@ public class WhoisNodeBuilder {
 			preparedStatement.addBatch();
 		}
 	}
-	
+
 	/**
 	 * Inserts admin contact information to DB.
 	 * 
