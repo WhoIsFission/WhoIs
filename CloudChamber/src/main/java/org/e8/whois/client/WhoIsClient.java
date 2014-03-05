@@ -36,16 +36,25 @@ public class WhoIsClient {
 	public static String callCommandRestClient(String aIpAddress) throws IOException{
 		if(logger.isDebugEnabled())
 		logger.debug("Started querying IANA and getting actual whois server");
+		String[] arrIPAddress=aIpAddress.split("\\.");
+		Integer prefix=null;
+		String whoisServer=null;
+		if(arrIPAddress!=null)
+		prefix=Integer.valueOf(arrIPAddress[0]);
 		
+		if(prefix!=null)
+		whoisServer=RegistryLoader.getInstance().getWhoIsServer(prefix);
+		// calls IANA when registry doesn't contain data
+		if(whoisServer==null||"".equals(whoisServer)){
 		String response=callCommandRestClient(IANA, aIpAddress);
 		Pattern pattern=Pattern.compile(PATTERN);
 		Matcher matcher=pattern.matcher(response);
-		String whoisServer=null;
 		if(matcher.find()){
 			whoisServer=matcher.group(1).trim();
 		}
-		
-		if(whoisServer!=null){
+		}
+		// calling whois server
+		if(whoisServer!=null||!("".equals(whoisServer))){
 			return callCommandRestClient(whoisServer, aIpAddress);
 		}else{
 			return "No whois data found";

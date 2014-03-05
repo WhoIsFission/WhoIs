@@ -35,7 +35,6 @@ public class WhoIsParser {
 		WhoIsNode<Long> responseNode=null;
 		try{
 		String response=WhoIsClient.callCommandRestClient(ipAddress);
-		System.out.println(response);
 		Parser parser=ParserBuilder.getParser(response);
 		if(parser!=null){
 		responseNode=parser.parse(response,ipAddress);

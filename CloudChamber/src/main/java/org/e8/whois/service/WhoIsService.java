@@ -1,6 +1,7 @@
 package org.e8.whois.service;
 
 
+import org.e8.whois.client.RegistryLoader;
 import org.e8.whois.configuration.WhoIsConfiguration;
 import org.e8.whois.resource.IPResource;
 import org.slf4j.Logger;
@@ -36,8 +37,11 @@ public class WhoIsService extends Service<WhoIsConfiguration>{
 		// TODO Auto-generated method stub
 		if(logger.isDebugEnabled())
 			logger.debug("Build cache and adding resources to environment varibale.");
-
+//build cache
 		BuildCache.cacheBuild(conf);
+		// Load RIR registry data
+		RegistryLoader.getInstance();
+		
 		env.addResource(new IPResource(conf));
 
 
