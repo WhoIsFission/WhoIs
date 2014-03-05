@@ -18,7 +18,7 @@ public interface IpWhoisDAO {
 	
 	List<WhoIsNode<Long>> findWhoisByCountry(String country);
 	
-	List<WhoIsNode<Long>> findAllWhoisByIpData() throws Exception;
+	List<WhoIsNode<Long>> findAllWhoisByIpData() throws WhoIsException;
 	
 	void updateWhoisByIpToHistoric(WhoIsNode<Long> whoisNode) throws WhoIsException;
 	
